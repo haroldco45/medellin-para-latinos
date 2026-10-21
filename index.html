@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Medellín para Latinos — Guía de supervivencia</title>
+<meta name="description" content="App bilingüe (español/inglés) para latinos que llegan a Medellín: mapa interactivo, metro y buses, centros de ayuda, papeles con Migración Colombia, salud, trabajo, el parlache paisa, emergencias y primeros pasos.">
+<meta name="theme-color" content="#EB0A1E">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Medellín Latinos">
+
+<!-- Open Graph / Twitter -->
+<meta property="og:title" content="Medellín para Latinos — Guía de supervivencia">
+<meta property="og:description" content="Mapa, metro y Cívica, papeles con Migración Colombia, salud, trabajo y el parlache paisa. En español e inglés.">
+<meta property="og:image" content="https://medellin-para-latinos.netlify.app/og-image.png">
+<meta property="og:url" content="https://medellin-para-latinos.netlify.app/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vibras Positivas HM">
+<meta property="og:image:secure_url" content="https://medellin-para-latinos.netlify.app/og-image.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Medellín para Latinos — guía de supervivencia">
+<meta property="og:locale" content="es_CO">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Medellín para Latinos — Guía de supervivencia">
+<meta name="twitter:description" content="Mapa, transporte, papeles, salud y parlache paisa para latinos recién llegados a Medellín.">
+<meta name="twitter:image" content="https://medellin-para-latinos.netlify.app/og-image.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+:root{
+  --red:#EB0A1E; --red-dark:#B30715; --ink:#0B0B0C; --ink-2:#3A3A3F; --muted:#6E6E76;
+  --line:#E6E6EA; --bg:#FFFFFF; --bg-2:#F5F5F7; --ok:#0A8A3A; --warn:#C77700;
+  --shadow:0 6px 24px rgba(0,0,0,.08); --r:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'Barlow',system-ui,sans-serif;font-size:16px;line-height:1.45}
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+a{color:var(--red);text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+h1,h2,h3{font-family:'Barlow Condensed','Barlow',sans-serif;letter-spacing:.2px;line-height:1.1}
+h2{font-size:1.7rem;text-transform:uppercase}
+h3{font-size:1.2rem}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+
+/* Header */
+header.top{position:sticky;top:0;z-index:1000;background:#fff;border-bottom:1px solid var(--line)}
+.top-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;max-width:980px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{width:38px;height:38px;border-radius:10px;background:var(--red);color:#fff;display:grid;place-items:center;font-family:'Barlow Condensed';font-weight:800;font-size:1.05rem;flex:none}
+.brand b{font-family:'Barlow Condensed';font-size:1.25rem;text-transform:uppercase;display:block;line-height:1}
+.brand small{color:var(--muted);font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.lang{display:flex;border:2px solid var(--ink);border-radius:999px;overflow:hidden;flex:none}
+.lang button{border:0;background:#fff;padding:6px 12px;font-weight:700;font-size:.85rem}
+.lang button.on{background:var(--ink);color:#fff}
+.clocks{display:flex;gap:8px;padding:0 16px 8px;max-width:980px;margin:0 auto;font-size:.82rem;color:var(--ink-2);flex-wrap:wrap}
+.clock{background:var(--bg-2);border-radius:999px;padding:3px 10px}
+.clock b{color:var(--ink)}
+
+/* Bottom nav */
+nav.tabs{position:fixed;bottom:0;left:0;right:0;z-index:1000;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+nav.tabs button{flex:1;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.72rem;font-weight:600;color:var(--muted);padding:4px 0}
+nav.tabs svg{width:24px;height:24px}
+nav.tabs button.on{color:var(--red)}
+nav.tabs button.sos{color:#fff}
+nav.tabs button.sos span.ic{background:var(--red);border-radius:50%;width:40px;height:40px;display:grid;place-items:center;margin-top:-18px;box-shadow:0 4px 14px rgba(235,10,30,.4)}
+nav.tabs button.sos em{color:var(--red);font-style:normal}
+
+section.view{display:none;padding:18px 0 30px}
+section.view.on{display:block}
+
+/* Hero */
+.hero{position:relative;border-radius:var(--r);overflow:hidden;min-height:260px;background:#111 center/cover no-repeat;color:#fff;display:flex;align-items:flex-end;margin-bottom:18px}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 20%,rgba(0,0,0,.78))}
+.hero .in{position:relative;z-index:1;padding:20px}
+.hero .kicker{display:inline-block;background:var(--red);padding:3px 10px;border-radius:4px;font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.hero h1{font-size:2.3rem;text-transform:uppercase}
+.hero p{max-width:560px;opacity:.95;margin-top:6px}
+.credit{position:absolute;right:8px;top:8px;z-index:1;font-size:.65rem;background:rgba(0,0,0,.5);padding:2px 6px;border-radius:4px;color:#ddd}
+
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:700px){.g3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:420px){.g2.keep{grid-template-columns:1fr 1fr}}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
+.card.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+.card.red{background:var(--red);color:#fff;border-color:var(--red)}
+.tile{display:flex;flex-direction:column;gap:6px;text-align:left;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);transition:transform .15s}
+.tile.hot{border:2px solid var(--red);background:#FFF5F6}
+.tile:active{transform:scale(.98)}
+.tile .em{font-size:1.6rem}
+.tile b{font-family:'Barlow Condensed';font-size:1.1rem;text-transform:uppercase}
+.tile small{color:var(--muted);font-size:.82rem}
+.sec-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:22px 0 10px;border-left:5px solid var(--red);padding-left:10px}
+.sec-head p{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;background:var(--bg-2);border-radius:999px;padding:3px 10px;font-size:.78rem;font-weight:600}
+.pill.red{background:#FDE7E9;color:var(--red-dark)}
+.pill.ok{background:#E3F5EA;color:var(--ok)}
+.pill.warn{background:#FFF1DC;color:var(--warn)}
+button.st{cursor:pointer;font-family:inherit;font-size:1rem;color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;padding:11px 16px;font-weight:700;font-size:.95rem;background:var(--ink);color:#fff}
+.btn.red{background:var(--red)}
+.btn.ghost{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+.btn.sm{padding:7px 12px;font-size:.85rem;border-radius:8px}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5}
+input,select,textarea{font-family:inherit;font-size:1rem;border:2px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ink)}
+label.f{display:block;font-weight:600;font-size:.88rem;margin:10px 0 4px}
+.row{display:flex;gap:8px;align-items:center}
+.row > *{min-width:0}
+.mt{margin-top:12px}.mt2{margin-top:20px}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.notice{background:#FFF8E6;border:1px solid #F3D38A;border-radius:10px;padding:10px 12px;font-size:.88rem}
+.notice.red{background:#FDE7E9;border-color:#F5B2B8}
+ul.clean{list-style:none}
+ul.dots{padding-left:18px}
+ul.dots li{margin:4px 0}
+
+/* Weather / money widgets */
+.wx{display:flex;gap:14px;align-items:center}
+.wx .t{font-family:'Barlow Condensed';font-size:2.6rem;font-weight:800}
+.days{display:flex;gap:8px;margin-top:8px}
+.days div{flex:1;background:rgba(255,255,255,.08);border-radius:8px;padding:6px;text-align:center;font-size:.8rem}
+
+/* Map */
+#map{height:62vh;min-height:380px;border-radius:var(--r);border:1px solid var(--line);z-index:1}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:2px solid var(--ink);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;font-size:.82rem;white-space:nowrap}
+.chip.on{background:var(--ink);color:#fff}
+.leaflet-popup-content{font-family:'Barlow';font-size:.9rem}
+.leaflet-popup-content b{font-size:1rem}
+.pin{width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:grid;place-items:center;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.pin span{transform:rotate(45deg);font-size:14px}
+
+/* Transport */
+.status-list{display:grid;gap:6px}
+.st{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:var(--bg-2)}
+.st .bar{width:8px;align-self:stretch;border-radius:4px}
+.st .nm{font-weight:700;flex:1}
+.leg{display:flex;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line)}
+.leg:last-child{border-bottom:0}
+.leg .md{flex:none;width:34px;height:34px;border-radius:8px;background:var(--bg-2);display:grid;place-items:center;font-size:1.1rem}
+.arr{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.arr b.min{font-family:'Barlow Condensed';font-size:1.3rem;color:var(--red);flex:none}
+table.fares{width:100%;border-collapse:collapse;font-size:.92rem}
+table.fares td,table.fares th{padding:8px;border-bottom:1px solid var(--line);text-align:left}
+table.fares th{font-family:'Barlow Condensed';text-transform:uppercase;font-size:.85rem;color:var(--muted)}
+table.fares td:last-child{font-weight:700;text-align:right;white-space:nowrap}
+table.fares td[colspan],table.fares td[style*="font-weight:400"]{white-space:normal}
+table.fares td:first-child{overflow-wrap:anywhere}
+
+/* Phrases */
+.sit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.sit{background:#fff;border:2px solid var(--line);border-radius:12px;padding:12px;text-align:left}
+.sit.on{border-color:var(--red);background:#FFF5F6}
+.sit .em{font-size:1.5rem}
+.sit b{display:block;font-size:.95rem;margin-top:4px}
+.dlg{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.bub{max-width:88%;border-radius:14px;padding:10px 12px;position:relative}
+.bub.A{background:var(--bg-2);align-self:flex-start;border-top-left-radius:4px}
+.bub.B{background:var(--ink);color:#fff;align-self:flex-end;border-top-right-radius:4px}
+.bub .who{font-size:.7rem;text-transform:uppercase;letter-spacing:.6px;opacity:.7;font-weight:700}
+.bub .en{font-weight:700;font-size:1.05rem}
+.bub .es{font-size:.9rem;opacity:.85;margin-top:2px}
+.bub .fon{font-size:.8rem;opacity:.65;font-style:italic;margin-top:2px}
+.say{border:0;background:var(--red);color:#fff;border-radius:999px;width:30px;height:30px;font-size:.85rem;flex:none}
+.bub .head{display:flex;justify-content:space-between;gap:8px;align-items:start}
+.pocket{display:grid;gap:8px}
+.pk{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px}
+.pk div{flex:1}
+.pk .en{font-weight:700}
+.pk .es{font-size:.85rem;color:var(--muted)}
+.showcard{position:fixed;inset:0;background:#fff;z-index:3000;display:none;flex-direction:column;justify-content:center;padding:28px;text-align:center}
+.showcard.on{display:flex}
+.showcard .big{font-family:'Barlow Condensed';font-weight:800;font-size:2.3rem;line-height:1.1}
+.showcard .addr{margin-top:18px;font-size:1.6rem;font-weight:700;color:var(--red)}
+
+/* SOS */
+.sos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:560px){.sos-grid{grid-template-columns:1fr 1fr}}
+.call{display:flex;flex-direction:column;gap:2px;border-radius:12px;padding:14px;color:#fff;background:var(--ink)}
+.call.red{background:var(--red)}
+.call .n{font-family:'Barlow Condensed';font-size:2rem;font-weight:800;line-height:1}
+.call small{opacity:.85}
+.org{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.org:last-child{border-bottom:0}
+.org .ic{flex:none;width:44px;height:44px;border-radius:10px;background:#FDE7E9;display:grid;place-items:center;font-size:1.3rem}
+.org .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+details.acc{border:1px solid var(--line);border-radius:12px;margin-bottom:8px;background:#fff}
+details.acc summary{padding:12px 14px;font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.acc summary::after{content:"+";color:var(--red);font-size:1.3rem;line-height:1}
+details.acc[open] summary::after{content:"–"}
+details.acc .body{padding:0 14px 14px}
+details.acc ol{padding-left:20px}
+details.acc ol li{margin:5px 0}
+
+/* checklist */
+.chk{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+.chk input{width:22px;height:22px;flex:none;accent-color:var(--red);margin-top:2px}
+.chk.done .t{text-decoration:line-through;color:var(--muted)}
+.progress{height:8px;background:var(--bg-2);border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--red);transition:width .3s}
+
+/* Gallery */
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.ph{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:4/3;background:var(--bg-2)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph span{position:absolute;left:0;right:0;bottom:0;padding:16px 8px 6px;color:#fff;font-weight:700;font-size:.85rem;background:linear-gradient(transparent,rgba(0,0,0,.75))}
+.ph .ph-fb{display:grid;place-items:center;height:100%;font-size:2rem}
+.video{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vlink{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:12px;color:var(--ink)}
+.vlink .play{flex:none;width:44px;height:44px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center}
+
+
+/* Lugares */
+.stat{background:var(--bg-2);border-radius:12px;padding:10px;text-align:center}
+.stat b{display:block;font-family:'Barlow Condensed';font-size:1.6rem;font-weight:800;color:var(--red)}
+.stat small{font-size:.75rem;color:var(--muted)}
+.places{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.plc{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.plc-img{position:relative;aspect-ratio:16/9;background:var(--bg-2);cursor:pointer}
+.plc-img img{width:100%;height:100%;object-fit:cover;display:block}
+.plc-img .ph-fb{height:100%;display:grid;place-items:center;font-size:2rem;opacity:.4}
+.plc-mark{position:absolute;left:8px;top:8px;background:#fff;color:var(--ink);font-weight:700;font-size:.75rem;padding:3px 8px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.plc-body{padding:12px 14px 14px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2500;display:none;align-items:flex-end;justify-content:center}
+.modal.on{display:flex}
+.sheet{background:#fff;width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0}
+@media(min-width:700px){.modal{align-items:center}.sheet{border-radius:18px}}
+.sheet-img{position:relative;height:240px;background:#222 center/cover no-repeat}
+.sheet-x{position:absolute;right:10px;top:10px;width:36px;height:36px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:1rem}
+.num{width:28px;height:28px;border-radius:50%;background:var(--red);color:#fff;font-weight:800;display:grid;place-items:center;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+/* Salud */
+.ladder{display:grid;gap:10px}
+.step{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
+.step .sn{flex:none;width:42px;height:42px;border-radius:10px;display:grid;place-items:center;font-size:1.3rem}
+/* Clima */
+.clim{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:12px;padding-top:22px;align-items:end}
+.cl{text-align:center;cursor:pointer}
+.cl .bar-wrap{height:110px;display:flex;align-items:flex-end}
+.cbar{width:100%;background:#F5B2B8;border-radius:6px 6px 0 0;position:relative;min-height:18px}
+.cbar span{position:absolute;top:-18px;left:0;right:0;font-size:.7rem;font-weight:700}
+.cl.on .cbar{background:var(--red)}
+.cl small{font-size:.66rem;color:var(--muted)}
+/* Nacionalidad */
+.nat-hero{background:linear-gradient(135deg,#AA151B 0%,#AA151B 30%,#F1BF00 30%,#F1BF00 70%,#AA151B 70%);border-radius:var(--r);padding:4px}
+.nat-hero .in{background:#fff;border-radius:11px;padding:16px}
+.road{position:relative;padding-left:30px}
+.road::before{content:"";position:absolute;left:13px;top:8px;bottom:8px;width:6px;border-radius:3px;background:repeating-linear-gradient(#3A3A3F 0 14px,#fff 14px 22px,#3A3A3F 22px 36px);opacity:.8}
+.rstep{position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 12px 12px 14px;margin-bottom:10px;box-shadow:var(--shadow)}
+.rstep .rn{position:absolute;left:-31px;top:10px;width:32px;height:32px;border-radius:50%;color:#fff;font-weight:800;display:grid;place-items:center;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.rstep.done{background:#F2FBF5;border-color:#B9E5C8}
+.rstep.done .rn{background:var(--ok)!important}
+.rstep .rh{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+.rstep .rh b{font-size:1.02rem}
+.rstep input[type=checkbox]{width:22px;height:22px;flex:none;accent-color:var(--ok)}
+.goal{background:var(--red);color:#fff;border-radius:var(--r);padding:18px;text-align:center}
+.goal b{font-family:'Barlow Condensed';font-size:1.8rem;text-transform:uppercase;display:block}
+.ychips{display:flex;flex-wrap:wrap;gap:8px}
+.qz-opt{display:block;width:100%;text-align:left;border:2px solid var(--line);background:#fff;border-radius:10px;padding:11px 12px;margin-top:8px;font-size:.98rem;font-family:inherit;color:var(--ink)}
+.qz-opt:hover{border-color:var(--ink)}
+.qz-opt.ok{border-color:var(--ok);background:#E3F5EA}
+.qz-opt.bad{border-color:var(--red);background:#FDE7E9}
+.qz-opt.sel{border-color:var(--ink);background:var(--bg-2)}
+.qz-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.qz-q{font-weight:700;font-size:1.08rem;margin-top:10px}
+.qz-timer{font-family:'Barlow Condensed';font-weight:800;font-size:1.3rem;color:var(--red)}
+.ychips .chip{white-space:normal;text-align:left;max-width:100%;line-height:1.25}
+.nat-hero .stat b{font-size:1.35rem;white-space:nowrap}
+
+/* Panel (sub pages) */
+.back{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--ink);background:none;border:0;margin-bottom:10px;font-size:.95rem}
+
+footer.foot{border-top:1px solid var(--line);margin-top:30px;padding:18px 16px;text-align:center;font-size:.8rem;color:var(--muted)}
+footer.foot b{color:var(--ink)}
+.install{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:1500;background:var(--ink);color:#fff;border-radius:14px;padding:12px 14px;display:none;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.install.on{display:flex}
+.install p{flex:1;font-size:.88rem}
+.toast{position:fixed;left:50%;top:80px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;z-index:4000;font-weight:600;display:none;max-width:90%}
+.toast.on{display:block}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;vertical-align:-3px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.splash{position:fixed;inset:0;background:var(--red);color:#fff;z-index:5000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;transition:opacity .5s}
+.splash h1{font-size:2.6rem;text-transform:uppercase}
+.splash small{opacity:.9}
+.splash.off{opacity:0;pointer-events:none}
+</style>
+<body>
+
+<div class="splash" id="splash">
+  <div class="logo" style="width:72px;height:72px;font-size:1.8rem;background:#fff;color:var(--red);border-radius:18px">MED</div>
+  <h1>Medellín para Latinos</h1>
+  <small>Desarrollada por Vibras Positivas HM</small>
+</div>
+
+<header class="top">
+  <div class="top-row">
+    <div class="brand">
+      <div class="logo" style="font-size:.82rem">MED</div>
+      <div style="min-width:0"><b data-t="appName">Medellín para Latinos</b><small data-t="tagline">Tu guía para empezar en Medellín</small></div>
+    </div>
+    <div class="lang" role="group" aria-label="Idioma">
+      <button id="lang-es" class="on" onclick="setLang('es')">ES</button>
+      <button id="lang-en" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+  <div class="clocks">
+    <span class="clock">🇨🇴 Medellín <b id="clk-mad">--:--</b></span>
+    <span class="clock">🇻🇪 Caracas <b id="clk-col">--:--</b></span>
+    <span class="clock" id="clk-diff"></span>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ================= INICIO ================= -->
+<section class="view on" id="v-home">
+  <div class="hero" id="hero">
+    <span class="credit" id="hero-credit"></span>
+    <div class="in">
+      <span class="kicker" data-t="heroKicker">Recién llegado</span>
+      <h1 data-t="heroTitle">Bienvenido a Medellín</h1>
+      <p data-t="heroText">Mapa, metro y Cívica, papeles con Migración Colombia, salud, trabajo y el parlache paisa para que nadie te coja de sorpresa.</p>
+    </div>
+  </div>
+
+  <div class="notice" id="fare-alert"></div>
+
+  <div class="grid g3 mt">
+    <button class="tile hot" onclick="go('places')"><span class="em">🏛️</span><b data-t="tPlaces">Lugares de interés</b><small data-t="tPlacesS">Qué conocer, gratis y de pago</small></button>
+    <button class="tile hot" onclick="go('papers')"><span class="em">📄</span><b data-t="tPapers">Papeles</b><small data-t="tPapersS">Visas, PPT, cédula de extranjería</small></button>
+    <button class="tile hot" onclick="go('nation')"><span class="em">🇨🇴</span><b data-t="tNation">Nacionalidad colombiana</b><small data-t="tNationS">Ruta de 10 pasos y simulador</small></button>
+    <button class="tile" onclick="go('map')"><span class="em">🗺️</span><b data-t="tMap">Mapa</b><small data-t="tMapS">Ayuda, hospitales, Migración</small></button>
+    <button class="tile" onclick="go('transit')"><span class="em">🚇</span><b data-t="tTransit">Metro y bus</b><small data-t="tTransitS">Cívica, líneas y tarifas 2026</small></button>
+    <button class="tile" onclick="go('phrases')"><span class="em">💬</span><b data-t="tPhrases">Español paisa</b><small data-t="tPhrasesS">Conversaciones y parlache</small></button>
+    <button class="tile" onclick="go('sos')"><span class="em">🆘</span><b data-t="tSos">Ayuda / SOS</b><small data-t="tSosS">Emergencias y asesoría gratis</small></button>
+    <button class="tile" onclick="go('first')"><span class="em">✅</span><b data-t="tFirst">Primeros días</b><small data-t="tFirstS">Lista paso a paso</small></button>
+    <button class="tile" onclick="go('health')"><span class="em">🩺</span><b data-t="tHealth">Salud</b><small data-t="tHealthS">EPS, SISBÉN, urgencias</small></button>
+    <button class="tile" onclick="go('work')"><span class="em">💼</span><b data-t="tWork">Trabajo y estudio</b><small data-t="tWorkS">Derechos, salario, calculadora</small></button>
+    <button class="tile" onclick="go('housing')"><span class="em">🏠</span><b data-t="tHousing">Vivienda</b><small data-t="tHousingS">Arrendar sin estafas</small></button>
+    <button class="tile" onclick="go('food')"><span class="em">🫓</span><b data-t="tFood">Comida latina</b><small data-t="tFoodS">Sabor de casa y supermercado</small></button>
+    <button class="tile" onclick="go('money')"><span class="em">💶</span><b data-t="tMoney">Dinero</b><small data-t="tMoneyS">Cambio en vivo y salario mínimo</small></button>
+    <button class="tile" onclick="go('pack')"><span class="em">🧥</span><b data-t="tPack">Clima y maleta</b><small data-t="tPackS">Ropa por mes y festivos</small></button>
+    <button class="tile" onclick="go('culture')"><span class="em">☕</span><b data-t="tCulture">Costumbres</b><small data-t="tCultureS">Cómo son los paisas</small></button>
+    <button class="tile" onclick="go('safety')"><span class="em">🛡️</span><b data-t="tSafety">Seguridad</b><small data-t="tSafetyS">No dar papaya</small></button>
+    <button class="tile" onclick="go('media')"><span class="em">📸</span><b data-t="tMedia">Fotos y videos</b><small data-t="tMediaS">Conoce la ciudad antes de ir</small></button>
+  </div>
+
+  <div class="grid g2 mt2">
+    <div class="card dark" id="wx-card">
+      <div class="small" style="opacity:.75" data-t="wxTitle">Clima en Medellín ahora</div>
+      <div class="wx mt" id="wx"><span class="spin"></span></div>
+      <div class="days" id="wx-days"></div>
+      <div class="small mt" style="opacity:.75" id="wx-tip"></div>
+    </div>
+    <div class="card" id="fx-card">
+      <div class="small muted" data-t="fxTitle">Dólar hoy</div>
+      <div id="fx-main" class="mt"><span class="spin"></span></div>
+      <div class="small muted mt" id="fx-upd"></div>
+      <button class="btn sm ghost mt" onclick="go('money')" data-t="fxMore">Convertidor completo →</button>
+    </div>
+  </div>
+
+  <div class="card mt2" id="myaddr-card">
+    <h3 data-t="myAddrT">📍 Mi dirección en Medellín</h3>
+    <p class="small muted" data-t="myAddrS">Guárdala aquí. Si te pierdes, la app te lleva de vuelta o se la muestras a alguien. Solo queda en tu celular.</p>
+    <div class="row mt">
+      <input id="my-addr" placeholder="Ej: Carrera 70 # 44-20, Laureles, Medellín">
+      <button class="btn red" onclick="saveAddr()" data-t="save">Guardar</button>
+    </div>
+    <div class="row mt" style="flex-wrap:wrap">
+      <button class="btn sm" onclick="routeHome()" data-t="takeHome">🏠 Llévame a casa</button>
+      <button class="btn sm ghost" onclick="openShow()" data-t="showSomeone">🙋 Mostrar a alguien</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MAPA ================= -->
+<section class="view" id="v-map">
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tMap">Mapa</h2><p data-t="mapSub">Toca un punto para ver detalles. Líneas y paradas desde OpenStreetMap.</p></div></div>
+  <div class="chips" id="map-chips"></div>
+  <div id="map"></div>
+  <div class="row mt" style="flex-wrap:wrap">
+    <button class="btn red sm" onclick="locateMe()" data-t="locate">📍 Dónde estoy</button>
+    <button class="btn sm" onclick="nearbyStops()" data-t="nearby">🚏 Paradas cerca de mí</button>
+    <button class="btn sm ghost" onclick="toggleTubeLines()" id="btn-lines" data-t="showLines">🚇 Dibujar líneas del metro</button>
+  </div>
+  <div id="map-info" class="mt"></div>
+</section>
+
+<!-- ================= TRANSPORTE ================= -->
+<section class="view" id="v-transit">
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tTransit">Metro y bus</h2><p data-t="transitSub">Metro, tranvía, metrocables y Metroplús con la tarjeta Cívica. Tarifas verificadas de 2026.</p></div></div>
+
+  <div class="card">
+    <h3 data-t="planT">🧭 ¿Cómo llego?</h3>
+    <label class="f" data-t="from">Desde</label>
+    <div class="row"><input id="j-from" placeholder="Estación, lugar o dirección (vacío = donde estoy)"><button class="btn sm ghost" onclick="useMyLoc('j-from')" title="GPS">📍</button></div>
+    <label class="f" data-t="to">Hasta</label>
+    <div class="row"><input id="j-to" placeholder="Ej: Parque Lleras, Estación Poblado, Calle 10 # 43-20"><button class="btn sm ghost" onclick="fillHome('j-to')" title="Casa">🏠</button></div>
+    <button class="btn red block mt" onclick="planJourney()" data-t="search">Buscar ruta</button>
+    <div id="j-out" class="mt"></div>
+  </div>
+
+  <div class="card mt">
+    <h3 data-t="linesT">🚇 Líneas del sistema Metro</h3>
+    <p class="small muted" data-t="linesS">De punta a punta. Toca una línea para verla en el mapa.</p>
+    <div id="lines" class="status-list mt"></div>
+    <div class="row mt" style="flex-wrap:wrap;gap:6px">
+      <a class="btn sm ghost" href="https://www.metrodemedellin.gov.co" target="_blank" rel="noopener" data-t="metroLive">🚦 Metro de Medellín (estado y rutas)</a>
+      <a class="btn sm ghost" href="https://www.metropol.gov.co" target="_blank" rel="noopener" data-t="emtLive">🚌 Área Metropolitana (rutas de bus)</a>
+    </div>
+  </div>
+
+  <div class="sec-head"><div><h2 data-t="faresT">Tarifas 2026</h2><p data-t="faresS">Tarifas oficiales del Metro de Medellín desde el 10 de enero de 2026.</p></div></div>
+  <div class="card">
+    <table class="fares" id="fares-table"></table>
+    <p class="small muted mt" data-t="faresNote">Fuentes: Metro de Medellín y Área Metropolitana del Valle de Aburrá (tarifas 2026). Verifica cambios en metrodemedellin.gov.co.</p>
+  </div>
+
+  <div class="sec-head"><div><h2 data-t="howT">Cómo funciona</h2></div></div>
+  <div id="how-acc"></div>
+</section>
+
+<!-- ================= FRASES ================= -->
+<section class="view" id="v-phrases">
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tPhrases">Español paisa</h2><p data-t="phrSub">Hablamos el mismo idioma… pero a lo paisa. Conversaciones reales con audio y otra forma de decirlo.</p></div></div>
+  <div class="sit-grid" id="sits"></div>
+  <div id="dlg-wrap" class="card mt" style="display:none">
+    <div class="row" style="justify-content:space-between"><h3 id="dlg-title"></h3><button class="btn sm" onclick="playAll()" data-t="playAll">▶ Todo</button></div>
+    <p class="small muted" id="dlg-ctx"></p>
+    <div class="dlg" id="dlg"></div>
+    <div id="dlg-tips" class="notice mt"></div>
+  </div>
+  <div class="sec-head"><div><h2 data-t="pocketT">Frases de bolsillo</h2><p data-t="pocketS">Las que más vas a usar en Medellín.</p></div></div>
+  <div class="pocket" id="pocket"></div>
+  <div class="sec-head"><div><h2 data-t="slangT">Parlache: el diccionario paisa</h2><p data-t="slangS">Palabras que vas a oír todos los días en Medellín.</p></div></div>
+  <div class="card"><table class="fares" id="slang"></table></div>
+  <div class="card mt">
+    <h3 data-t="speedT">🐢 Velocidad de la voz</h3>
+    <input type="range" min="0.5" max="1.1" step="0.1" value="0.9" id="rate" style="padding:0;border:0">
+  </div>
+</section>
+
+<!-- ================= SOS ================= -->
+<section class="view" id="v-sos">
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tSos">Ayuda / SOS</h2><p data-t="sosSub">Toca para llamar. El 123 es gratis y atiende las 24 horas desde cualquier celular.</p></div></div>
+  <div class="sos-grid">
+    <a class="call red" href="tel:123"><span class="n">123</span><small data-t="c112">Emergencias: policía, ambulancia, bomberos</small></a>
+    <a class="call" href="tel:155"><span class="n">155</span><small data-t="c091">Violencia contra la mujer (orientación 24 h)</small></a>
+    <a class="call" href="tel:141"><span class="n">141</span><small data-t="c092">ICBF: niños y adolescentes en riesgo</small></a>
+    <a class="call" href="tel:122"><span class="n">122</span><small data-t="c016">Fiscalía: denuncias de delitos</small></a>
+    <a class="call" href="tel:192"><span class="n">192</span><small data-t="c024">Salud mental: línea 192, opción 4</small></a>
+    <a class="call" href="tel:165"><span class="n">165</span><small data-t="c010">GAULA: extorsión y "gota a gota"</small></a>
+  </div>
+
+  <div class="sec-head"><div><h2 data-t="orgsT">Te asesoran gratis</h2><p data-t="orgsS">Entidades oficiales y organizaciones que atienden a migrantes.</p></div></div>
+  <div class="card" id="orgs"></div>
+
+  <div class="sec-head"><div><h2 data-t="sitsT">¿Qué hago si…?</h2></div></div>
+  <div id="sos-acc"></div>
+</section>
+
+<!-- ================= PAPELES ================= -->
+<section class="view" id="v-papers">
+  <button class="back" onclick="go('home')">← <span data-t="back">Volver</span></button>
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tPapers">Papeles</h2><p data-t="papersSub">Los trámites migratorios en Colombia, en orden.</p></div></div>
+  <div class="ladder" id="papers-steps"></div>
+  <div class="notice red mt" data-t="citaWarn">🚫 <b>Las citas de Migración Colombia y los trámites de la Cancillería se hacen solo en sus webs oficiales.</b> Si alguien te vende una cita o un PPT "rápido", es estafa.</div>
+  <div id="papers-acc" class="mt2"></div>
+  <button class="tile hot mt" style="width:100%" onclick="go('nation')"><span class="em">🇨🇴</span><b data-t="tNation">Nacionalidad colombiana</b><small data-t="nationLink">El paso final: cuándo y cómo pedir la nacionalidad →</small></button>
+</section>
+
+<!-- ================= NACIONALIDAD ================= -->
+<section class="view" id="v-nation">
+  <button class="back" onclick="go('home')">← <span data-t="back">Volver</span></button>
+  <div class="nat-hero"><div class="in">
+    <h2 data-t="natTitle">Ruta a la nacionalidad colombiana</h2>
+    <p class="small muted mt" data-t="natSub">Por adopción, de inicio a fin. Para latinoamericanos y caribeños por nacimiento el plazo es de 1 año como residente (Ley 2332 de 2023).</p>
+    <div class="grid g3 keep mt" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat"><b>1</b><small data-t="natSt1">año (latinoamericanos)</small></div>
+      <div class="stat"><b>$808.558</b><small data-t="natSt2">trámite en Cancillería</small></div>
+      <div class="stat"><b>5</b><small data-t="natSt3">años, regla general</small></div>
+    </div>
+  </div></div>
+
+  <div class="card mt">
+    <h3 data-t="calcT">🧮 ¿Desde cuándo puedo pedirla?</h3>
+    <p class="small muted" data-t="calcS">Elige tu caso y la fecha desde la que tienes visa de residente (R). El tiempo como turista o sin papeles no cuenta.</p>
+    <label class="f" data-t="calcCase">Mi caso</label>
+    <div class="ychips" id="nat-cases"></div>
+    <label class="f" data-t="calcDate">Fecha de mi visa de residente</label>
+    <input type="date" id="nat-date">
+    <div id="nat-out" class="mt"></div>
+  </div>
+
+  <div class="card mt" id="ccse-card">
+    <h3 data-t="ccseT">📝 Simulador del examen de conocimientos</h3>
+    <p class="small muted" data-t="ccseS">20 preguntas de práctica sobre Constitución, historia, geografía y cultura de Colombia, en 30 minutos. No son las preguntas oficiales: estudia también la guía "Colombia, nuestra casa".</p>
+    <div id="ccse-box" class="mt"></div>
+  </div>
+  <div class="card mt">
+    <h3 data-t="ccseOffT">📚 Material oficial para estudiar</h3>
+    <p class="small muted" data-t="ccseOffS">El examen se basa en la Constitución de 1991 y en la guía de estudio de la Cancillería.</p>
+    <div class="grid mt" style="gap:8px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
+      <a class="vlink" href="https://cancilleria.gov.co/atencion-y-servicio-al-ciudadano/tramites-y-servicios/nacionalidad/naturalizacion" target="_blank" rel="noopener"><span class="play">📘</span><span><b data-t="lnkManual">Nacionalidad por adopción (Cancillería)</b><br><small class="muted" data-t="lnkManualS">Requisitos, guía y pago</small></span></a>
+      <a class="vlink" href="http://www.secretariasenado.gov.co/senado/basedoc/constitucion_politica_1991.html" target="_blank" rel="noopener"><span class="play">🧾</span><span><b data-t="lnkPrep">Constitución Política de 1991</b><br><small class="muted" data-t="lnkPrepS">Texto completo oficial</small></span></a>
+      <a class="vlink" href="https://cancilleria.gov.co/normograma/compilacion/docs/ley_2332_2023.htm" target="_blank" rel="noopener"><span class="play">📐</span><span><b data-t="lnkSpec">Ley 2332 de 2023</b><br><small class="muted" data-t="lnkSpecS">La ley de nacionalidad vigente</small></span></a>
+      <a class="vlink" href="https://tramites.cancilleria.gov.co" target="_blank" rel="noopener"><span class="play">✍️</span><span><b data-t="lnkReg">Trámites en línea Cancillería</b><br><small class="muted" data-t="lnkRegS">Radicar y hacer seguimiento</small></span></a>
+    </div>
+  </div>
+
+  <div class="sec-head"><div><h2 data-t="roadT">Los 10 pasos</h2><p data-t="roadS">Marca cada paso cuando lo completes. Se guarda en tu celular.</p></div></div>
+  <div class="progress"><i id="nat-prog"></i></div>
+  <p class="small muted mt" id="nat-prog-t"></p>
+  <div class="road mt" id="nat-road"></div>
+  <div class="goal"><b data-t="goalT">Meta: ¡ya eres colombiano/a!</b><span class="small" data-t="goalS">Colombia permite la doble nacionalidad: revisa si tu país también la permite.</span></div>
+
+  <div class="sec-head"><div><h2 data-t="costT">Cuánto cuesta</h2><p data-t="costS">Valor publicado por la Cancillería.</p></div></div>
+  <div class="card"><table class="fares" id="nat-cost"></table></div>
+
+  <div class="sec-head"><div><h2 data-t="natFaqT">Lo que debes saber</h2></div></div>
+  <div id="nat-acc"></div>
+  <div class="notice red mt" data-t="natScam">🚫 Nadie puede "acelerar" tu nacionalidad pagando. Desconfía de tramitadores: la solicitud la puedes radicar tú mismo en la web de la Cancillería.</div>
+  <p class="small muted mt" data-t="natDisc">Resumen orientativo, no es asesoría legal. Confirma requisitos y tarifas en cancilleria.gov.co antes de pagar o radicar.</p>
+</section>
+
+<!-- ================= SUBPÁGINAS ================= -->
+<section class="view" id="v-first">
+  <button class="back" onclick="go('home')">← <span data-t="back">Volver</span></button>
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tFirst">Primeros días</h2><p data-t="firstSub">Marca lo que ya hiciste. Se guarda en tu celular.</p></div></div>
+  <div class="progress"><i id="prog"></i></div>
+  <p class="small muted mt" id="prog-t"></p>
+  <div class="card mt" id="checklist"></div>
+  <div class="sec-head"><div><h2 data-t="visaT">Antes de viajar</h2></div></div>
+  <div id="visa-acc"></div>
+</section>
+
+<section class="view" id="v-money">
+  <button class="back" onclick="go('home')">← <span data-t="back">Volver</span></button>
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tMoney">Dinero</h2><p data-t="moneySub">Tasas en vivo. Úsalas como referencia: casas de cambio y bancos cobran un margen.</p></div></div>
+  <div class="card">
+    <label class="f" data-t="amount">Cantidad</label>
+    <div class="row"><input id="fx-amt" type="number" value="100000" inputmode="decimal"><select id="fx-from" style="max-width:120px"></select></div>
+    <div class="mt" id="fx-results"></div>
+  </div>
+  <div class="grid g2 mt">
+    <div class="card red"><div class="small" style="opacity:.85" data-t="wageT">Salario mínimo 2026 (SMMLV)</div><div style="font-family:'Barlow Condensed';font-size:2.4rem;font-weight:800">$1.750.905<small style="font-size:1rem">/<span data-t="month">mes</span></small></div><div class="small" data-t="wageS">+ auxilio de transporte de $249.095 si ganas hasta dos mínimos. Valor fijado de forma transitoria por el Decreto 0159 de 2026 mientras el Consejo de Estado decide.</div><div class="small mt" id="wage-cop"></div></div>
+    <div class="card"><h3 data-t="tipsT">💡 Ahorra</h3><ul class="dots small mt" id="money-tips"></ul></div>
+  </div>
+</section>
+
+<section class="view" id="v-culture">
+  <button class="back" onclick="go('home')">← <span data-t="back">Volver</span></button>
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tCulture">Costumbres</h2><p data-t="cultSub">Lo que nadie te dice y te ahorra malos ratos.</p></div></div>
+  <div class="grid g2" id="culture"></div>
+</section>
+
+<section class="view" id="v-safety">
+  <button class="back" onclick="go('home')">← <span data-t="back">Volver</span></button>
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tSafety">Seguridad</h2><p data-t="safeSub">Medellín es amable pero tiene riesgos reales. La regla de oro: no dar papaya.</p></div></div>
+  <div id="safety"></div>
+</section>
+
+<section class="view" id="v-media">
+  <button class="back" onclick="go('home')">← <span data-t="back">Volver</span></button>
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tMedia">Fotos y videos</h2><p data-t="mediaSub">Fotos reales de Wikimedia Commons. Toca una foto para verla en el mapa.</p></div></div>
+  <div class="gal" id="gallery"></div>
+  <div class="sec-head"><div><h2 data-t="vidT">Videos</h2><p data-t="vidS">Abren YouTube con los videos más recientes de cada tema.</p></div></div>
+  <div class="grid g2" id="vlinks"></div>
+</section>
+
+<!-- ================= LUGARES DE INTERÉS ================= -->
+<section class="view" id="v-places">
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tPlaces">Lugares de interés</h2><p data-t="placesSub">Qué conocer en Medellín: fotos reales, cómo llegar y cuáles son gratis.</p></div></div>
+  <div class="grid g3 keep" style="grid-template-columns:repeat(3,1fr)">
+    <div class="stat"><b id="st-total">0</b><small data-t="stTotal">lugares</small></div>
+    <div class="stat"><b id="st-free">0</b><small data-t="stFree">gratis</small></div>
+    <div class="stat"><b id="st-mine">0/0</b><small data-t="stMine">quiero ir / ya fui</small></div>
+  </div>
+  <div class="row mt"><input id="pl-q" placeholder="Buscar: museo, parque, mercado…"><button class="btn red" onclick="sortNear()" data-t="nearMe">📍 Cerca</button></div>
+  <div class="chips mt" id="pl-chips"></div>
+  <div class="places" id="places"></div>
+
+  <div class="sec-head"><div><h2 data-t="itinT">Itinerarios listos</h2><p data-t="itinS">Recorridos de un día. Toca para verlos dibujados en el mapa.</p></div></div>
+  <div class="grid g2" id="itins"></div>
+</section>
+
+<!-- ================= SALUD ================= -->
+<section class="view" id="v-health">
+  <button class="back" onclick="go('home')">← <span data-t="back">Volver</span></button>
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tHealth">Salud</h2><p data-t="healthSub">Cómo funciona la salud en Colombia: EPS, SISBÉN y urgencias.</p></div></div>
+  <div class="ladder" id="ladder"></div>
+  <div id="health-acc" class="mt2"></div>
+</section>
+
+<!-- ================= TRABAJO ================= -->
+<section class="view" id="v-work">
+  <button class="back" onclick="go('home')">← <span data-t="back">Volver</span></button>
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tWork">Trabajo y estudio</h2><p data-t="workSub">Tus derechos, el salario mínimo y cómo no caer en trampas.</p></div></div>
+  <div class="card">
+    <h3 data-t="payT">🧮 Calculadora de sueldo</h3>
+    <div class="grid g2 keep" style="grid-template-columns:1fr 1fr">
+      <div><label class="f" data-t="payRate">Pago por hora (COP)</label><input id="pay-rate" type="number" step="0.01" value="10000" inputmode="decimal"></div>
+      <div><label class="f" data-t="payHours">Horas por semana</label><input id="pay-hours" type="number" value="42" inputmode="numeric"></div>
+    </div>
+    <div class="mt" id="pay-out"></div>
+  </div>
+  <div id="work-acc" class="mt"></div>
+</section>
+
+<!-- ================= VIVIENDA ================= -->
+<section class="view" id="v-housing">
+  <button class="back" onclick="go('home')">← <span data-t="back">Volver</span></button>
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tHousing">Vivienda</h2><p data-t="housingSub">Cómo encontrar pieza o apartamento sin que te tumben.</p></div></div>
+  <div class="card red"><h3 data-t="redFlagsT">🚩 Señales de estafa</h3><ul class="dots small mt" id="redflags"></ul></div>
+  <div id="housing-acc" class="mt"></div>
+  <div class="card mt"><h3 data-t="viewT">📝 Antes de firmar, revisa</h3><div id="viewlist" class="mt"></div></div>
+</section>
+
+<!-- ================= COMIDA LATINA ================= -->
+<section class="view" id="v-food">
+  <button class="back" onclick="go('home')">← <span data-t="back">Volver</span></button>
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tFood">Comida latina</h2><p data-t="foodSub">Dónde conseguir el sabor de tu país y cómo se llaman las cosas aquí.</p></div></div>
+  <div class="grid g2" id="food-areas"></div>
+  <div class="sec-head"><div><h2 data-t="foodWordsT">En el supermercado</h2><p data-t="foodWordsS">Así se llaman las cosas en Medellín (y en otros países).</p></div></div>
+  <div class="card"><table class="fares" id="food-words"></table></div>
+  <div class="notice mt" data-t="foodTip">💡 En Éxito, Carulla, D1 y Ara encuentras harina P.A.N., y en el centro hay tiendas venezolanas con queso llanero, harina y malta.</div>
+</section>
+
+<!-- ================= CLIMA Y MALETA ================= -->
+<section class="view" id="v-pack">
+  <button class="back" onclick="go('home')">← <span data-t="back">Volver</span></button>
+  <div class="sec-head" style="margin-top:0"><div><h2 data-t="tPack">Clima y maleta</h2><p data-t="packSub">Qué ropa llevar según el mes y cuándo cierra todo.</p></div></div>
+  <div class="card">
+    <label class="f" data-t="monthQ">¿En qué mes viajas?</label>
+    <select id="pack-month"></select>
+    <div id="pack-out" class="mt"></div>
+  </div>
+  <div class="card mt">
+    <h3 data-t="climT">🌡️ Temperatura promedio en Medellín</h3>
+    <div class="clim" id="clim"></div>
+    <p class="small muted mt" data-t="climS">Máxima / mínima promedio en °C. Medellín es la "ciudad de la eterna primavera": casi igual todo el año.</p>
+  </div>
+  <div class="card mt">
+    <h3 data-t="holT">📅 Próximos festivos en Colombia</h3>
+    <p class="small muted" data-t="holS">Muchos festivos se pasan al lunes (puentes). Bancos y oficinas cierran; el metro funciona con horario de domingo.</p>
+    <div id="hols" class="mt"></div>
+  </div>
+</section>
+
+<!-- Ficha de lugar -->
+<div class="modal" id="pl-modal" onclick="if(event.target===this)closePlace()">
+  <div class="sheet" id="pl-sheet"></div>
+</div>
+
+</main>
+
+<footer class="foot">
+  <div><b>Desarrollada por Vibras Positivas HM — Derechos de Autor Reservados</b></div>
+  <div class="mt" data-t="footNote">Información de referencia, no es asesoría legal. Verifica trámites en migracioncolombia.gov.co y cancilleria.gov.co, y tarifas en metrodemedellin.gov.co. Mapa, líneas y paradas © colaboradores de OpenStreetMap, © CARTO. Fotos: Wikimedia Commons.</div>
+  <div class="mt"><span data-t="updated">Actualizada</span>: <span id="upd"></span> (hora Colombia)</div>
+</footer>
+
+<nav class="tabs">
+  <button data-v="home" class="on" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span data-t="nHome">Inicio</span></button>
+  <button data-v="places" onclick="go('places')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span data-t="nPlaces">Lugares</span></button>
+  <button data-v="sos" class="sos" onclick="go('sos')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></span><em data-t="nSos">SOS</em></button>
+  <button data-v="transit" onclick="go('transit')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M8 21l2-4M16 21l-2-4"/><circle cx="9" cy="14" r=".5"/><circle cx="15" cy="14" r=".5"/></svg><span data-t="nTransit">Transporte</span></button>
+  <button data-v="phrases" onclick="go('phrases')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span data-t="nPhrases">Frases</span></button>
+</nav>
+
+<div class="install" id="install"><p data-t="installT">Instala la app en tu celular para usarla sin internet.</p><button class="btn red sm" id="install-btn" data-t="install">Instalar</button><button class="btn sm" onclick="this.parentNode.classList.remove('on')">✕</button></div>
+<div class="toast" id="toast"></div>
+<div class="showcard" id="showcard" onclick="this.classList.remove('on')">
+  <div class="big">Qué pena con usted, soy nuevo en Medellín y estoy perdido.<br>¿Me ayuda a llegar a esta dirección, por favor?</div>
+  <div class="addr" id="show-addr"></div>
+  <div class="mt2 muted" data-t="tapClose">(Toca para cerrar)</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+/* =========================================================
+   Medellín para Latinos — Vibras Positivas HM
+   ========================================================= */
+const OVERPASS = 'https://overpass-api.de/api/interpreter';
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('medl_'+k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
+  set(k, v){ try{ localStorage.setItem('medl_'+k, JSON.stringify(v)); }catch(e){} }
+};
+let LANG = store.get('lang','es');
+const L = (o)=> (o && typeof o==='object') ? (o[LANG] ?? o.es) : o;
+
+/* ---------- UI strings ---------- */
+const T = {
+  appName:{es:'Medellín para Latinos',en:'Medellín for Latinos'},
+  tagline:{es:'Tu guía para empezar en Medellín',en:'Your guide to starting out in Medellín'},
+  heroKicker:{es:'Recién llegado',en:'Just arrived'},
+  heroTitle:{es:'Bienvenido a Medellín',en:'Welcome to Medellín'},
+  heroText:{es:'Mapa, metro y Cívica, papeles con Migración Colombia, salud, trabajo y el parlache paisa para que nadie te coja de sorpresa.',en:'Map, metro and Cívica card, Migración Colombia paperwork, health, jobs and paisa slang so nothing catches you off guard.'},
+
+  tPlaces:{es:'Lugares de interés',en:'Places to visit'}, tPlacesS:{es:'Qué conocer, gratis y de pago',en:'What to see, free and paid'},
+  placesSub:{es:'Qué conocer en Medellín: fotos reales, cómo llegar y cuáles son gratis.',en:'What to see in Medellín: real photos, directions and what\'s free.'},
+  stTotal:{es:'lugares',en:'places'}, stFree:{es:'gratis',en:'free'}, stMine:{es:'quiero ir / ya fui',en:'want / visited'},
+  nearMe:{es:'📍 Cerca',en:'📍 Near me'}, itinT:{es:'Itinerarios listos',en:'Ready-made itineraries'}, itinS:{es:'Recorridos de un día. Toca para verlos dibujados en el mapa.',en:'One-day routes. Tap to see them on the map.'},
+  nPlaces:{es:'Lugares',en:'Places'},
+  ccseT:{es:'📝 Simulador del examen de conocimientos',en:'📝 Knowledge-test simulator'},
+  ccseS:{es:'20 preguntas de práctica sobre Constitución, historia, geografía y cultura de Colombia, en 30 minutos. No son las preguntas oficiales: estudia también la guía "Colombia, nuestra casa".',en:'20 practice questions on Colombia\'s Constitution, history, geography and culture, 30 minutes. Not the official questions.'},
+  ccseOffT:{es:'📚 Material oficial para estudiar',en:'📚 Official study material'},
+  ccseOffS:{es:'El examen se basa en la Constitución de 1991 y en la guía de estudio de la Cancillería.',en:'The test is based on the 1991 Constitution and the Foreign Ministry study guide.'},
+  lnkManual:{es:'Nacionalidad por adopción (Cancillería)',en:'Naturalisation (Foreign Ministry)'}, lnkManualS:{es:'Requisitos, guía y pago',en:'Requirements, guide, payment'},
+  lnkPrep:{es:'Constitución Política de 1991',en:'1991 Constitution'}, lnkPrepS:{es:'Texto completo oficial',en:'Official full text'},
+  lnkSpec:{es:'Ley 2332 de 2023',en:'Law 2332 of 2023'}, lnkSpecS:{es:'La ley de nacionalidad vigente',en:'Current nationality law'},
+  lnkReg:{es:'Trámites en línea Cancillería',en:'Foreign Ministry online services'}, lnkRegS:{es:'Radicar y hacer seguimiento',en:'Apply and track'},
+  tNation:{es:'Nacionalidad colombiana',en:'Colombian citizenship'}, tNationS:{es:'Ruta de 10 pasos y simulador',en:'10-step route & practice test'},
+  nationLink:{es:'El paso final: cuándo y cómo pedir la nacionalidad →',en:'The final step: when and how to apply for citizenship →'},
+  natTitle:{es:'Ruta a la nacionalidad colombiana',en:'Route to Colombian citizenship'},
+  natSub:{es:'Por adopción, de inicio a fin. Para latinoamericanos y caribeños por nacimiento el plazo es de 1 año como residente (Ley 2332 de 2023).',en:'By adoption, start to finish. Latin Americans and Caribbeans by birth need 1 year as residents (Law 2332 of 2023).'},
+  natSt1:{es:'año (latinoamericanos)',en:'year (Latin Americans)'}, natSt2:{es:'trámite en Cancillería',en:'Foreign Ministry fee'}, natSt3:{es:'años, regla general',en:'years, general rule'},
+  calcT:{es:'🧮 ¿Desde cuándo puedo pedirla?',en:'🧮 When can I apply?'},
+  calcS:{es:'Elige tu caso y la fecha desde la que tienes visa de residente (R). El tiempo como turista o sin papeles no cuenta.',en:'Pick your case and the date your resident (R) visa started. Tourist or undocumented time does not count.'},
+  calcCase:{es:'Mi caso',en:'My case'}, calcDate:{es:'Fecha de mi visa de residente',en:'Start of my resident visa'},
+  roadT:{es:'Los 10 pasos',en:'The 10 steps'}, roadS:{es:'Marca cada paso cuando lo completes. Se guarda en tu celular.',en:'Tick each step as you complete it. Saved on your phone.'},
+  goalT:{es:'Meta: ¡ya eres colombiano/a!',en:'Goal: you are Colombian!'}, goalS:{es:'Colombia permite la doble nacionalidad: revisa si tu país también la permite.',en:'Colombia allows dual nationality — check your own country too.'},
+  costT:{es:'Cuánto cuesta',en:'What it costs'}, costS:{es:'Valor publicado por la Cancillería.',en:'Fee published by the Foreign Ministry.'},
+  natFaqT:{es:'Lo que debes saber',en:'What you need to know'},
+  natScam:{es:'🚫 Nadie puede "acelerar" tu nacionalidad pagando. Desconfía de tramitadores: la solicitud la puedes radicar tú mismo en la web de la Cancillería.',en:'🚫 Nobody can speed up your citizenship for money. Apply yourself on the Foreign Ministry website.'},
+  natDisc:{es:'Resumen orientativo, no es asesoría legal. Confirma requisitos y tarifas en cancilleria.gov.co antes de pagar o radicar.',en:'Guidance only, not legal advice. Confirm on cancilleria.gov.co.'},
+  tPapers:{es:'Papeles',en:'Paperwork'}, tPapersS:{es:'Visas, PPT, cédula de extranjería',en:'Visas, PPT, foreigner ID'},
+  papersSub:{es:'Los trámites migratorios en Colombia, en orden.',en:'Immigration steps in Colombia, in order.'},
+  citaWarn:{es:'🚫 <b>Las citas de Migración Colombia y los trámites de la Cancillería se hacen solo en sus webs oficiales.</b> Si alguien te vende una cita o un PPT "rápido", es estafa.',en:'🚫 <b>Migración Colombia appointments and Foreign Ministry procedures are only on their official websites.</b> Anyone selling appointments or "fast" permits is a scammer.'},
+  tHealth:{es:'Salud',en:'Health'}, tHealthS:{es:'EPS, SISBÉN, urgencias',en:'EPS, SISBÉN, A&E'}, healthSub:{es:'Cómo funciona la salud en Colombia: EPS, SISBÉN y urgencias.',en:'How health care works: EPS, SISBÉN and A&E.'},
+  tWork:{es:'Trabajo y estudio',en:'Work & study'}, tWorkS:{es:'Derechos, salario, calculadora',en:'Rights, wages, calculator'}, workSub:{es:'Tus derechos, el salario mínimo y cómo no caer en trampas.',en:'Your rights, minimum wage and avoiding traps.'},
+  payT:{es:'🧮 Calculadora de sueldo',en:'🧮 Pay calculator'}, payRate:{es:'Pago por hora (COP)',en:'Hourly pay (COP)'}, payHours:{es:'Horas por semana',en:'Hours per week'},
+  tHousing:{es:'Vivienda',en:'Housing'}, tHousingS:{es:'Arrendar sin estafas',en:'Renting without scams'}, housingSub:{es:'Cómo encontrar pieza o apartamento sin que te tumben.',en:'How to find a room or flat without getting scammed.'},
+  redFlagsT:{es:'🚩 Señales de estafa',en:'🚩 Scam red flags'}, viewT:{es:'📝 Antes de firmar, revisa',en:'📝 Check before signing'},
+  tFood:{es:'Comida latina',en:'Latin food'}, tFoodS:{es:'Sabor de casa y supermercado',en:'Taste of home & groceries'}, foodSub:{es:'Dónde conseguir el sabor de tu país y cómo se llaman las cosas aquí.',en:'Where to find home flavours and what things are called here.'},
+  foodWordsT:{es:'En el supermercado',en:'At the supermarket'}, foodWordsS:{es:'Así se llaman las cosas en Medellín (y en otros países).',en:'What things are called in Medellín.'},
+  foodTip:{es:'💡 En Éxito, Carulla, D1 y Ara encuentras harina P.A.N., y en el centro hay tiendas venezolanas con queso llanero, harina y malta.',en:'💡 Supermarkets stock P.A.N. flour; downtown Venezuelan shops have queso llanero and malta.'},
+  tPack:{es:'Clima y maleta',en:'Weather & packing'}, tPackS:{es:'Ropa por mes y festivos',en:'Clothes by month & holidays'}, packSub:{es:'Qué ropa llevar según el mes y cuándo cierra todo.',en:'What to pack by month and when things close.'},
+  monthQ:{es:'¿En qué mes viajas?',en:'Which month are you travelling?'}, climT:{es:'🌡️ Temperatura promedio en Medellín',en:'🌡️ Average temperature in Medellín'},
+  climS:{es:'Máxima / mínima promedio en °C. Medellín es la "ciudad de la eterna primavera": casi igual todo el año.',en:'Average high/low °C. Medellín is the "city of eternal spring".'},
+  holT:{es:'📅 Próximos festivos en Colombia',en:'📅 Upcoming public holidays in Colombia'}, holS:{es:'Muchos festivos se pasan al lunes (puentes). Bancos y oficinas cierran; el metro funciona con horario de domingo.',en:'Many holidays move to Monday. Banks close; metro runs a Sunday timetable.'},
+  tMap:{es:'Mapa',en:'Map'}, tMapS:{es:'Ayuda, hospitales, Migración',en:'Help, hospitals, immigration'},
+  tTransit:{es:'Metro y bus',en:'Metro & bus'}, tTransitS:{es:'Cívica, líneas y tarifas 2026',en:'Cívica, lines and 2026 fares'},
+  tPhrases:{es:'Español paisa',en:'Paisa Spanish'}, tPhrasesS:{es:'Conversaciones y parlache',en:'Dialogues & local slang'},
+  tSos:{es:'Ayuda / SOS',en:'Help / SOS'}, tSosS:{es:'Emergencias y asesoría gratis',en:'Emergencies & free advice'},
+  tFirst:{es:'Primeros días',en:'First days'}, tFirstS:{es:'Lista paso a paso',en:'Step-by-step checklist'},
+  tMoney:{es:'Dinero',en:'Money'}, tMoneyS:{es:'Cambio en vivo y salario mínimo',en:'Live rates and minimum wage'},
+  tCulture:{es:'Costumbres',en:'Customs'}, tCultureS:{es:'Cómo son los paisas',en:'What paisas are like'},
+  tSafety:{es:'Seguridad',en:'Safety'}, tSafetyS:{es:'No dar papaya',en:'Don\'t "give papaya"'},
+  tMedia:{es:'Fotos y videos',en:'Photos & videos'}, tMediaS:{es:'Conoce la ciudad antes de ir',en:'See the city before you go'},
+  wxTitle:{es:'Clima en Medellín ahora',en:'Medellín weather now'},
+  fxTitle:{es:'Dólar hoy',en:'US dollar today'}, fxMore:{es:'Convertidor completo →',en:'Full converter →'},
+  myAddrT:{es:'📍 Mi dirección en Medellín',en:'📍 My address in Medellín'},
+  myAddrS:{es:'Guárdala aquí. Si te pierdes, la app te lleva de vuelta o se la muestras a alguien. Solo queda en tu celular.',en:'Save it here. It stays on your phone only.'},
+  save:{es:'Guardar',en:'Save'}, takeHome:{es:'🏠 Llévame a casa',en:'🏠 Take me home'}, showSomeone:{es:'🙋 Mostrar a alguien',en:'🙋 Show someone'},
+  mapSub:{es:'Toca un punto para ver detalles. Líneas y paradas desde OpenStreetMap.',en:'Tap a pin for details. Lines and stops from OpenStreetMap.'},
+  locate:{es:'📍 Dónde estoy',en:'📍 Where am I'}, nearby:{es:'🚏 Paradas cerca de mí',en:'🚏 Stops near me'},
+  showLines:{es:'🚇 Dibujar líneas del metro',en:'🚇 Draw metro lines'},
+  transitSub:{es:'Metro, tranvía, metrocables y Metroplús con la tarjeta Cívica. Tarifas verificadas de 2026.',en:'Metro, tram, cable cars and Metroplús with the Cívica card. Verified 2026 fares.'},
+  planT:{es:'🧭 ¿Cómo llego?',en:'🧭 How do I get there?'}, from:{es:'Desde',en:'From'}, to:{es:'Hasta',en:'To'},
+  search:{es:'Buscar ruta',en:'Find route'},
+  linesT:{es:'🚇 Líneas del sistema Metro',en:'🚇 Metro system lines'}, linesS:{es:'De punta a punta. Toca una línea para verla en el mapa.',en:'End to end. Tap a line to see it on the map.'},
+  metroLive:{es:'🚦 Metro de Medellín (estado y rutas)',en:'🚦 Metro de Medellín (status & routes)'}, emtLive:{es:'🚌 Área Metropolitana (rutas de bus)',en:'🚌 Metropolitan Area (bus routes)'},
+  faresT:{es:'Tarifas 2026',en:'2026 fares'}, faresS:{es:'Tarifas oficiales del Metro de Medellín desde el 10 de enero de 2026.',en:'Official Metro de Medellín fares since 10 January 2026.'},
+  faresNote:{es:'Fuentes: Metro de Medellín y Área Metropolitana del Valle de Aburrá (tarifas 2026). Verifica cambios en metrodemedellin.gov.co.',en:'Sources: Metro de Medellín and the Metropolitan Area (2026 fares).'},
+  howT:{es:'Cómo funciona',en:'How it works'},
+  phrSub:{es:'Hablamos el mismo idioma… pero a lo paisa. Conversaciones reales con audio y otra forma de decirlo.',en:'Same language… paisa style. Dialogues with audio and English translation.'},
+  playAll:{es:'▶ Todo',en:'▶ All'}, pocketT:{es:'Frases de bolsillo',en:'Pocket phrases'}, pocketS:{es:'Las que más vas a usar en Medellín.',en:'The ones you will use most in Medellín.'},
+  slangT:{es:'Parlache: el diccionario paisa',en:'Paisa slang dictionary'}, slangS:{es:'Palabras que vas a oír todos los días en Medellín.',en:'Words you will hear every day in Medellín.'},
+  speedT:{es:'🐢 Velocidad de la voz',en:'🐢 Voice speed'},
+  sosSub:{es:'Toca para llamar. El 123 es gratis y atiende las 24 horas desde cualquier celular.',en:'Tap to call. 123 is free, 24/7 from any phone.'},
+  c112:{es:'Emergencias: policía, ambulancia, bomberos',en:'Emergency: police, ambulance, fire'},
+  c091:{es:'Violencia contra la mujer (orientación 24 h)',en:'Violence against women (24h)'},
+  c092:{es:'ICBF: niños y adolescentes en riesgo',en:'Children at risk (ICBF)'},
+  c016:{es:'Fiscalía: denuncias de delitos',en:'Crime reports (Prosecutor)'},
+  c024:{es:'Salud mental: línea 192, opción 4',en:'Mental health: 192, option 4'},
+  c010:{es:'GAULA: extorsión y "gota a gota"',en:'GAULA: extortion and loan sharks'},
+  orgsT:{es:'Te asesoran gratis',en:'Free advice'}, orgsS:{es:'Entidades oficiales y organizaciones que atienden a migrantes.',en:'Official bodies and organisations serving migrants.'},
+  sitsT:{es:'¿Qué hago si…?',en:'What do I do if…?'},
+  back:{es:'Volver',en:'Back'}, firstSub:{es:'Marca lo que ya hiciste. Se guarda en tu celular.',en:'Tick what you have done. Saved on your phone.'},
+  visaT:{es:'Antes de viajar',en:'Before you travel'},
+  moneySub:{es:'Tasas en vivo. Úsalas como referencia: casas de cambio y bancos cobran un margen.',en:'Live rates, for reference.'},
+  amount:{es:'Cantidad',en:'Amount'}, wageT:{es:'Salario mínimo 2026 (SMMLV)',en:'2026 minimum wage'}, month:{es:'mes',en:'month'},
+  wageS:{es:'+ auxilio de transporte de $249.095 si ganas hasta dos mínimos. Valor fijado de forma transitoria por el Decreto 0159 de 2026 mientras el Consejo de Estado decide.',en:'+ COP 249,095 transport allowance. Set provisionally by Decree 0159 of 2026.'},
+  tipsT:{es:'💡 Ahorra',en:'💡 Save money'},
+  cultSub:{es:'Lo que nadie te dice y te ahorra malos ratos.',en:'What nobody tells you.'},
+  safeSub:{es:'Medellín es amable pero tiene riesgos reales. La regla de oro: no dar papaya.',en:'Medellín is friendly but has real risks.'},
+  mediaSub:{es:'Fotos reales de Wikimedia Commons. Toca una foto para verla en el mapa.',en:'Real photos from Wikimedia Commons. Tap one to see it on the map.'},
+  vidT:{es:'Videos',en:'Videos'}, vidS:{es:'Abren YouTube con los videos más recientes de cada tema.',en:'Open YouTube with the latest videos on each topic.'},
+  footNote:{es:'Información de referencia, no es asesoría legal. Verifica trámites en migracioncolombia.gov.co y cancilleria.gov.co, y tarifas en metrodemedellin.gov.co. Mapa, líneas y paradas © colaboradores de OpenStreetMap, © CARTO. Fotos: Wikimedia Commons.',en:'Reference information, not legal advice. Check migracioncolombia.gov.co, cancilleria.gov.co and metrodemedellin.gov.co. Map © OpenStreetMap contributors, © CARTO. Photos: Wikimedia Commons.'},
+  updated:{es:'Actualizada',en:'Updated'},
+  nHome:{es:'Inicio',en:'Home'}, nSos:{es:'SOS',en:'SOS'}, nTransit:{es:'Transporte',en:'Transport'}, nPhrases:{es:'Frases',en:'Phrases'},
+  installT:{es:'Instala la app en tu celular para usarla sin internet.',en:'Install the app on your phone to use it offline.'},
+  install:{es:'Instalar',en:'Install'}, tapClose:{es:'(Toca para cerrar)',en:'(Tap to close)'}
+};
+function applyLang(){
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-t]').forEach(el=>{ const k=el.dataset.t; if(T[k]) el.innerHTML = L(T[k]); });
+  document.getElementById('lang-es').classList.toggle('on',LANG==='es');
+  document.getElementById('lang-en').classList.toggle('on',LANG==='en');
+  const ph = {
+    'my-addr':{es:'Ej: Carrera 70 # 44-20, Laureles, Medellín',en:'e.g. Carrera 70 # 44-20, Laureles, Medellín'},
+    'j-from':{es:'Estación, lugar o dirección (vacío = donde estoy)',en:'Station, place or address (empty = where I am)'},
+    'j-to':{es:'Ej: Parque Lleras, Estación Poblado, Calle 10 # 43-20',en:'e.g. Parque Lleras, Estación Poblado, Calle 10 # 43-20'},
+    'pl-q':{es:'Buscar: museo, parque, mercado…',en:'Search: museum, park, market…'}
+  };
+  for(const id in ph){ const el=document.getElementById(id); if(el) el.placeholder=L(ph[id]); }
+}
+function setLang(l){ LANG=l; store.set('lang',l); applyLang(); renderAll(); }
+
+/* ---------- Helpers ---------- */
+const $ = (s)=>document.querySelector(s);
+const jsq = (s)=>String(s??'').replace(/['"\\<>&]/g,'');
+const esc = (s)=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),2600); }
+async function getJSON(url){
+  const r = await fetch(url);
+  const j = await r.json().catch(()=>null);
+  return {ok:r.ok, status:r.status, data:j};
+}
+function tz(date, zone, opts){ return new Intl.DateTimeFormat(LANG==='es'?'es-CO':'en-GB',{timeZone:zone,...opts}).format(date); }
+
+/* ---------- Clocks (hora real) ---------- */
+function offsetMin(zone, d=new Date()){
+  const p = new Intl.DateTimeFormat('en-US',{timeZone:zone,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).formatToParts(d);
+  const g = k=>+p.find(x=>x.type===k).value;
+  return (Date.UTC(g('year'),g('month')-1,g('day'),g('hour'),g('minute')) - Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate(),d.getUTCHours(),d.getUTCMinutes()))/60000;
+}
+function tick(){
+  const d=new Date();
+  $('#clk-mad').textContent = tz(d,'America/Bogota',{hour:'2-digit',minute:'2-digit'});
+  $('#clk-col').textContent = tz(d,'America/Caracas',{hour:'2-digit',minute:'2-digit'});
+  const h = (offsetMin('America/Caracas',d)-offsetMin('America/Bogota',d))/60;
+  $('#clk-diff').textContent = LANG==='es' ? `Caracas va ${h} h adelante` : `Caracas is ${h} h ahead`;
+}
+
+/* ---------- Navigation ---------- */
+function go(v){
+  document.querySelectorAll('section.view').forEach(s=>s.classList.remove('on'));
+  $('#v-'+v).classList.add('on');
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  window.scrollTo({top:0,behavior:'instant'});
+  if(v==='map') initMap();
+  if(v==='media') loadGallery();
+  history.replaceState(null,'','#'+v);
+}
+
+/* ---------- Fares (verificadas oct. 2026: Metro de Medellín, enero 2026) ---------- */
+function renderFares(){
+  $('#fare-alert').innerHTML = L({es:'💳 Saca la tarjeta <b>Cívica personalizada</b>: el pasaje del Metro te queda en <b>$3.820</b> en vez de $4.400, y con ella te integras gratis o con descuento a buses, cables, tranvía y Metroplús.',en:'💳 Get a <b>personalised Cívica card</b>: the Metro fare drops to <b>COP 3,820</b> instead of 4,400, with integrated transfers to buses, cable cars, tram and Metroplús.'});
+  const rows = [
+    [{es:'Metro, tranvía, cables y Metroplús — usuario frecuente (Cívica personalizada)',en:'Metro system — frequent user (personalised Cívica)'}, '$3.820'],
+    [{es:'Metro — al portador / ocasional',en:'Metro — bearer / occasional'}, '$4.400'],
+    [{es:'Estudiantes (Cívica estudiantil)',en:'Students'}, '$1.600'],
+    [{es:'Adulto mayor',en:'Senior'}, '$3.330'],
+    [{es:'Persona con discapacidad',en:'Person with disability'}, '$2.720'],
+    [{es:'Metrocable Arví (línea L) — extranjeros / tarjeta general',en:'Arví cable car (line L) — foreigners / general card'}, '$26.700'],
+    [{es:'Metrocable Arví — Cívica personalizada nacional',en:'Arví cable car — national personalised Cívica'}, '$11.900'],
+    [{es:'Bus Medellín ↔ aeropuerto José María Córdova (Combuses)',en:'Bus Medellín ↔ JMC airport (Combuses)'}, '$20.000'],
+    [{es:'Ruta integrada Medellín, Envigado, Itagüí, Sabaneta, La Estrella',en:'Integrated route Medellín, Envigado, Itagüí, Sabaneta, La Estrella'}, '$3.800'],
+    [{es:'Ruta integrada Bello / Copacabana',en:'Integrated route Bello / Copacabana'}, '$3.900']
+  ];
+  $('#fares-table').innerHTML = `<tr><th>${L({es:'Pasaje',en:'Fare'})}</th><th style="text-align:right">${L({es:'Precio (COP)',en:'Price (COP)'})}</th></tr>` + rows.map(r=>`<tr><td>${L(r[0])}</td><td>${r[1]}</td></tr>`).join('');
+}
+
+/* ---------- How it works ---------- */
+const HOW = [
+  {t:{es:'💳 La tarjeta Cívica',en:'💳 The Cívica card'},
+   b:{es:'<p>La Cívica es la tarjeta del Metro de Medellín. Sirve en <b>metro, tranvía, metrocables, Metroplús y rutas integradas</b>.</p><ul class="dots mt"><li><b>Cívica personalizada:</b> con tu nombre y documento (pasaporte, PPT o cédula de extranjería). Te da la tarifa de usuario frecuente ($3.820) y si la pierdes recuperas el saldo.</li><li><b>Cívica al portador:</b> la compra cualquiera; el pasaje sale a $4.400.</li><li>La personalizas en los puntos de atención Cívica de las estaciones o en la web del Metro.</li><li>Recárgala en taquillas, máquinas y la app <b>Cívica</b>.</li></ul>',
+      en:'<p>Cívica is Medellín\'s transport card for metro, tram, cable cars, Metroplús and integrated buses.</p><ul class="dots mt"><li><b>Personalised:</b> with your ID (passport, PPT or foreigner ID); frequent-user fare COP 3,820.</li><li><b>Bearer card:</b> COP 4,400 per trip.</li><li>Top up at ticket offices, machines or the Cívica app.</li></ul>'}},
+  {t:{es:'🚇 Las líneas',en:'🚇 The lines'},
+   b:{es:'<ul class="dots"><li><b>Línea A:</b> Niquía (Bello) ↔ La Estrella, de norte a sur por toda la ciudad.</li><li><b>Línea B:</b> San Antonio ↔ San Javier (al occidente).</li><li><b>Tranvía T-A:</b> San Antonio ↔ Oriente, por la avenida Ayacucho.</li><li><b>Metrocables:</b> K (Acevedo–Santo Domingo), L (Santo Domingo–Parque Arví), J (San Javier–La Aurora), H, M y P.</li><li><b>Metroplús:</b> buses de carril exclusivo integrados al metro.</li></ul>',
+      en:'<ul class="dots"><li><b>Line A:</b> Niquía ↔ La Estrella (north–south).</li><li><b>Line B:</b> San Antonio ↔ San Javier.</li><li><b>Tram T-A:</b> San Antonio ↔ Oriente.</li><li><b>Cable cars:</b> K, L (to Parque Arví), J, H, M, P.</li><li><b>Metroplús</b> BRT buses.</li></ul>'}},
+  {t:{es:'✈️ Del aeropuerto José María Córdova',en:'✈️ From José María Córdova airport'},
+   b:{es:'<ul class="dots"><li>El aeropuerto internacional está en <b>Rionegro</b>, a unos 45–60 minutos de Medellín por el túnel de Oriente.</li><li><b>Bus Combuses:</b> $20.000 hasta el centro de Medellín (sector San Diego) y con parada en Estación Exposiciones del metro.</li><li><b>Taxi:</b> usa la fila oficial del aeropuerto o una app; pregunta el precio antes de subir.</li><li>El aeropuerto Olaya Herrera (dentro de la ciudad) solo tiene vuelos nacionales cortos.</li></ul>',
+      en:'<ul class="dots"><li>The international airport is in <b>Rionegro</b>, 45–60 min away.</li><li><b>Combuses</b> bus: COP 20,000 to central Medellín (San Diego), stopping at Exposiciones metro.</li><li><b>Taxi:</b> official rank or app; agree the price first.</li></ul>'}},
+  {t:{es:'🚌 Buses y taxis',en:'🚌 Buses and taxis'},
+   b:{es:'<ul class="dots"><li>Los buses urbanos se pagan en efectivo al conductor o con Cívica en las rutas integradas.</li><li>Para pedir la parada di "¡en la esquina, por favor!" o toca el timbre.</li><li>Taxis amarillos con taxímetro: pide que lo pongan o usa apps (Cabify, DiDi, inDrive, Uber).</li></ul>',
+      en:'<ul class="dots"><li>Pay buses in cash or with Cívica on integrated routes.</li><li>Yellow taxis use meters; or use ride apps.</li></ul>'}},
+  {t:{es:'🚲 EnCicla y la Cultura Metro',en:'🚲 EnCicla and "Cultura Metro"'},
+   b:{es:'<ul class="dots"><li><b>EnCicla:</b> bicicletas públicas gratuitas; te registras con tu documento.</li><li><b>Cultura Metro:</b> en el metro no se come, no se bebe, se cede el puesto y se deja salir antes de entrar. Los paisas están muy orgullosos de su metro limpio.</li><li>Horario aproximado del metro: 4:30 a. m. a 11:00 p. m. (domingos y festivos desde las 5:00 a. m.).</li></ul>',
+      en:'<ul class="dots"><li><b>EnCicla:</b> free public bikes.</li><li><b>Cultura Metro:</b> no eating or drinking, give up seats, let people off first.</li><li>Metro runs roughly 04:30–23:00.</li></ul>'}},
+  {t:{es:'📱 Apps recomendadas',en:'📱 Recommended apps'},
+   b:{es:'<ul class="dots"><li><b>Metro de Medellín</b> y <b>Cívica</b> (oficiales): rutas, saldo y recargas.</li><li><b>Google Maps</b> o <b>Moovit</b>: rutas puerta a puerta.</li><li><b>Medellín Me Cuida</b>: servicios de la Alcaldía.</li></ul>',
+      en:'<ul class="dots"><li>Metro de Medellín and Cívica apps; Google Maps or Moovit.</li></ul>'}}
+];
+function renderAcc(el, arr){ el.innerHTML = arr.map((x,i)=>`<details class="acc"${i===0?' open':''}><summary>${L(x.t)}</summary><div class="body">${L(x.b)}</div></details>`).join(''); }
+
+/* ---------- Metro lines ---------- */
+const MLINES = [
+  ['A','#0B5AAB','Niquía','La Estrella'],
+  ['B','#F08A00','San Antonio','San Javier'],
+  ['T-A','#00A19A','San Antonio','Oriente'],
+  ['K','#5BB031','Acevedo','Santo Domingo'],
+  ['L','#8B5A2B','Santo Domingo',{es:'Parque Arví',en:'Arví Park'}],
+  ['J','#E4002B','San Javier','La Aurora'],
+  ['H','#7B2D8E','Oriente','Villa Sierra'],
+  ['M','#E7368B','Miraflores','Trece de Noviembre'],
+  ['P','#C4122F','Acevedo','El Progreso']
+];
+const LINE_COLORS = Object.fromEntries(MLINES.map(l=>[l[0],l[1]]));
+function renderLines(){
+  $('#lines').innerHTML = MLINES.map(l=>`<button class="st" style="border:0;text-align:left;width:100%" onclick="showLine('${l[0]}')"><span class="bar" style="background:${l[1]}"></span><span style="flex:none;width:30px;height:30px;border-radius:50%;background:${l[1]};color:#fff;font-size:.8rem;display:grid;place-items:center;font-weight:800">${l[0]}</span><span class="nm">${esc(L(l[2]))}${l[3]?' ↔ '+esc(L(l[3])):''}</span><span class="pill">🗺️</span></button>`).join('');
+}
+function showLine(ref){ go('map'); setTimeout(async()=>{ if(!L_) return; await toggleTubeLines(true); const lay=lineLayers[ref]; if(lay){ map.fitBounds(lay.getBounds(),{padding:[30,30]}); lay.eachLayer(p=>(p instanceof L_.Polyline)&&p.setStyle({weight:8})); setTimeout(()=>lay.eachLayer(p=>(p instanceof L_.Polyline)&&p.setStyle({weight:4})),2500);} },300); }
+
+/* ---------- Journey planner (abre Google Maps / Apple Maps con transporte público) ---------- */
+let destLabel='';
+function mapsLinks(from,to){
+  const g = 'https://www.google.com/maps/dir/?api=1&travelmode=transit'+(from?'&origin='+encodeURIComponent(from):'')+'&destination='+encodeURIComponent(to);
+  const a = 'https://maps.apple.com/?dirflg=r'+(from?'&saddr='+encodeURIComponent(from):'')+'&daddr='+encodeURIComponent(to);
+  const w = 'https://www.google.com/maps/dir/?api=1&travelmode=walking'+(from?'&origin='+encodeURIComponent(from):'')+'&destination='+encodeURIComponent(to);
+  return {g,a,w};
+}
+function addMedellín(q){ q=q.trim(); return (/^-?\d+\.\d+,\s*-?\d+\.\d+$/.test(q) || /medell|envigado|itag|bello|sabaneta|antioquia/i.test(q)) ? q : q+', Medellín, Antioquia'; }
+function planJourney(){
+  const out=$('#j-out');
+  const fromV=$('#j-from').value.trim(), toV=$('#j-to').value.trim();
+  if(!toV){ toast(L({es:'Escribe a dónde vas',en:'Enter your destination'})); return; }
+  const from = fromV?addMedellín(fromV):'', to = addMedellín(toV);
+  const l = mapsLinks(from,to);
+  out.innerHTML = `<div class="card" style="box-shadow:none;background:var(--bg-2)"><p class="small">${L({es:'Ruta',en:'Route'})}: <b>${esc(fromV||L({es:'donde estoy',en:'my location'}))}</b> → <b>${esc(destLabel||toV)}</b></p>
+   <div class="grid g2 keep mt" style="grid-template-columns:1fr 1fr"><a class="btn red" href="${l.g}" target="_blank" rel="noopener">🚇 Google Maps</a><a class="btn" href="${l.a}" target="_blank" rel="noopener">🍎 Apple Maps</a></div>
+   <a class="btn ghost block mt" href="${l.w}" target="_blank" rel="noopener">🚶 ${L({es:'Ir caminando',en:'Walk there'})}</a>
+   <p class="small muted mt">${L({es:'Te muestra horarios en vivo, transbordos y el andén. Si dejas "Desde" vacío, sale de donde estás.',en:'Shows live times, transfers and platforms. Leave "From" empty to start from your location.'})}</p></div>`;
+  destLabel='';
+}
+function getPos(){ return new Promise((res,rej)=>{ if(!navigator.geolocation) return rej(); navigator.geolocation.getCurrentPosition(p=>res(p.coords),rej,{enableHighAccuracy:true,timeout:12000}); }); }
+async function useMyLoc(id){ try{ const c=await getPos(); $('#'+id).value=`${c.latitude.toFixed(5)},${c.longitude.toFixed(5)}`; toast('📍 OK'); }catch(e){ toast(L({es:'Activa la ubicación del celular',en:'Turn on location'})); } }
+function fillHome(id){ const a=store.get('addr',''); if(!a){ toast(L({es:'Primero guarda tu dirección en Inicio',en:'Save your address on Home first'})); return;} $('#'+id).value=a; }
+
+/* ---------- Places on the map ---------- */
+const CATS = {
+  help:{ic:'🤝',c:'#EB0A1E',n:{es:'Ayuda y trámites',en:'Help & offices'}},
+  health:{ic:'🏥',c:'#0067B1',n:{es:'Urgencias',en:'A&E'}},
+  latino:{ic:'🫓',c:'#F2A900',n:{es:'Barrios latinos',en:'Latin areas'}},
+  sights:{ic:'🏛️',c:'#0B0B0C',n:{es:'Lugares de interés',en:'Places to visit'}},
+  air:{ic:'✈️',c:'#6E6E76',n:{es:'Aeropuerto y estaciones',en:'Airport & stations'}}
+};
+const PLACES = [
+  {cat:'help',n:'Migración Colombia — Medellín',lat:6.2208,lng:-75.5968,a:'Calle 19 # 80A-40, Belén (entrada por la Calle 19A)',web:'https://www.migracioncolombia.gov.co',d:{es:'Cédula de extranjería, registro de visa, salvoconductos, PPT y permisos. Solo con cita previa por la web. Confirma la dirección al agendar.',en:'Foreigner ID, visa registration, PPT and permits. Appointment only via the website.'}},
+  {cat:'help',n:'Centro Intégrate (Prado Centro) — ubicación aproximada',lat:6.2586,lng:-75.5612,a:'Barrio Prado Centro, Medellín',web:'https://www.medellin.gov.co',d:{es:'Centro de la Alcaldía con ACNUR y OIM para migrantes, refugiados y retornados: empleo, educación, salud, asesoría legal y apoyo psicosocial.',en:'City centre with UNHCR and IOM for migrants: jobs, education, health, legal and psychosocial support.'}},
+  {cat:'help',n:'Alcaldía de Medellín — La Alpujarra',lat:6.2448,lng:-75.5741,a:'Calle 44 # 52-165, Centro Administrativo La Alpujarra',web:'https://www.medellin.gov.co',d:{es:'Trámites municipales, SISBÉN y servicios sociales.',en:'City services, SISBÉN and social services.'}},
+  {cat:'health',n:'Hospital San Vicente Fundación (urgencias)',lat:6.2647,lng:-75.5629,a:'Calle 64 # 51D-154',d:{es:'Gran hospital universitario. Urgencias 24 h.',en:'Major teaching hospital. 24h A&E.'}},
+  {cat:'health',n:'Hospital General de Medellín (urgencias)',lat:6.2340,lng:-75.5743,a:'Carrera 48 # 32-102',d:{es:'Hospital público. Urgencias 24 h.',en:'Public hospital. 24h A&E.'}},
+  {cat:'health',n:'Hospital Pablo Tobón Uribe (urgencias)',lat:6.2785,lng:-75.5800,a:'Calle 78B # 69-240',d:{es:'Urgencias 24 h, noroccidente.',en:'24h A&E, north-west.'}},
+  {cat:'health',n:'Clínica Las Américas (urgencias)',lat:6.2220,lng:-75.6000,a:'Diagonal 75B # 2A-80',d:{es:'Urgencias 24 h, occidente (Belén).',en:'24h A&E, west.'}},
+  {cat:'air',n:'Aeropuerto José María Córdova (Rionegro)',lat:6.1645,lng:-75.4231,d:{es:'Vuelos internacionales. Bus Combuses a Medellín por $20.000.',en:'International flights. Combuses to Medellín COP 20,000.'}},
+  {cat:'air',n:'Aeropuerto Olaya Herrera',lat:6.2199,lng:-75.5906,d:{es:'Vuelos nacionales cortos, dentro de la ciudad.',en:'Short domestic flights, in the city.'}},
+  {cat:'air',n:'Terminal del Norte',lat:6.2786,lng:-75.5700,d:{es:'Buses al norte, a la costa y a Venezuela. Metro Caribe.',en:'Coaches north, to the coast and Venezuela. Metro Caribe.'}},
+  {cat:'air',n:'Terminal del Sur',lat:6.2160,lng:-75.5875,d:{es:'Buses al sur y occidente del país, Bogotá y Cali.',en:'Coaches south and west, Bogotá and Cali.'}}
+];
+
+/* ---------- Map ---------- */
+let map, layers={}, activeCats=new Set(Object.keys(CATS)), meMarker, stopsLayer, linesLayer, linesOn=false, lineLayers={};
+function pinIcon(c,ic){ return L_.divIcon({className:'',html:`<div class="pin" style="background:${c}"><span>${ic}</span></div>`,iconSize:[30,30],iconAnchor:[15,30],popupAnchor:[0,-28]}); }
+const L_ = window.L;
+function initMap(){
+  if(map){ setTimeout(()=>map.invalidateSize(),100); return; }
+  if(!L_){ $('#map').innerHTML='<p class="small muted" style="padding:20px">Mapa no disponible sin conexión.</p>'; return; }
+  map = L_.map('map',{zoomControl:true}).setView([6.2442,-75.5812],13);
+  L_.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:19,attribution:'© OpenStreetMap © CARTO'}).addTo(map);
+  for(const k in CATS){ layers[k]=L_.layerGroup().addTo(map); }
+  PLACES.forEach(p=>{
+    const c=CATS[p.cat];
+    const html = `<b>${esc(p.n)}</b><br><span>${esc(L(p.d))}</span>${p.a?`<br><small>${esc(p.a)}</small>`:''}<div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">${p.tel?`<a class="btn sm red" style="color:#fff" href="tel:${p.tel}">📞 ${L({es:'Llamar',en:'Call'})}</a>`:''}${p.web?`<a class="btn sm" style="color:#fff" href="${p.web}" target="_blank" rel="noopener">🌐 Web</a>`:''}<a class="btn sm ghost" href="https://www.google.com/maps/dir/?api=1&travelmode=transit&destination=${p.lat},${p.lng}" target="_blank" rel="noopener">🧭 ${L({es:'Cómo llegar',en:'Directions'})}</a></div>`;
+    L_.marker([p.lat,p.lng],{icon:pinIcon(c.c,c.ic)}).bindPopup(html).addTo(layers[p.cat]);
+  });
+  LUGARES.forEach(p=>{ const lat=p.c.includes('latino'); L_.marker([p.lat,p.lng],{icon:pinIcon(lat?CATS.latino.c:CATS.sights.c,lat?'🫓':'🏛️')}).addTo(layers[lat?'latino':'sights']).bindPopup(`<b>${esc(p.n)}</b><br><span>${esc(L(p.d))}</span><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn sm red" onclick="openPlace('${p.id}')">${L({es:'Ver más',en:'More'})}</button><button class="btn sm ghost" onclick="routeTo('${p.id}')">🧭 ${L({es:'Cómo llegar',en:'Directions'})}</button></div>`); });
+  stopsLayer = L_.layerGroup().addTo(map);
+  renderChips();
+  setTimeout(()=>map.invalidateSize(),150);
+}
+function renderChips(){
+  $('#map-chips').innerHTML = Object.entries(CATS).map(([k,c])=>`<button class="chip ${activeCats.has(k)?'on':''}" onclick="toggleCat('${k}')">${c.ic} ${L(c.n)}</button>`).join('');
+}
+function toggleCat(k){ if(activeCats.has(k)){activeCats.delete(k); map.removeLayer(layers[k]);} else {activeCats.add(k); map.addLayer(layers[k]);} renderChips(); }
+async function locateMe(){
+  initMap();
+  try{ const c=await getPos(); const ll=[c.latitude,c.longitude];
+    if(meMarker) meMarker.setLatLng(ll); else meMarker=L_.circleMarker(ll,{radius:9,color:'#fff',weight:3,fillColor:'#0A84FF',fillOpacity:1}).addTo(map).bindPopup(L({es:'Estás aquí',en:'You are here'}));
+    map.setView(ll,16); meMarker.openPopup(); return c;
+  }catch(e){ toast(L({es:'No pude obtener tu ubicación. Activa el GPS y da permiso.',en:'Could not get your location. Enable GPS and allow access.'})); return null; }
+}
+async function overpass(q){
+  const r = await fetch(OVERPASS+'?data='+encodeURIComponent(q));
+  if(!r.ok) throw r.status;
+  return r.json();
+}
+async function nearbyStops(){
+  const c = await locateMe(); if(!c) return;
+  const info=$('#map-info'); info.innerHTML='<span class="spin"></span> '+L({es:'Buscando paradas…',en:'Finding stops…'});
+  try{
+    const a=`(around:500,${c.latitude},${c.longitude})`;
+    const data = await overpass(`[out:json][timeout:25];(node${a}[railway=station];node${a}[station=subway];node${a}[railway=subway_entrance];node${a}[highway=bus_stop];);out body 60;`);
+    const els=(data?.elements||[]).filter(e=>e.tags);
+    stopsLayer.clearLayers();
+    if(!els.length){ info.innerHTML=`<p class="small muted">${L({es:'No encontré paradas a menos de 500 m.',en:'No stops within 500 m.'})}</p>`; return; }
+    let nb=0, nm=0;
+    els.forEach(s=>{
+      const t=s.tags, isBus=t.highway==='bus_stop', isEnt=t.railway==='subway_entrance';
+      if(isBus) nb++; else nm++;
+      const lines = t.route_ref ? `<br><small>${L({es:'Líneas',en:'Lines'})}: ${esc(t.route_ref)}</small>` : '';
+      const ref = isBus && t.ref ? `<br><small>${L({es:'Parada nº',en:'Stop no.'})} <b>${esc(t.ref)}</b> — ${L({es:'búscala en Google Maps o Moovit para ver las rutas',en:'check Google Maps or Moovit for routes'})}</small>` : '';
+      L_.marker([s.lat,s.lon],{icon:pinIcon(isBus?'#EB0A1E':'#005AA9',isBus?'🚌':(isEnt?'Ⓜ️':'🚇'))}).addTo(stopsLayer)
+        .bindPopup(`<b>${esc(t.name||(isBus?L({es:'Parada de bus',en:'Bus stop'}):L({es:'Acceso al metro',en:'Metro entrance'})))}</b>${lines}${ref}<br><a class="btn sm ghost mt" href="https://www.google.com/maps/dir/?api=1&travelmode=walking&destination=${s.lat},${s.lon}" target="_blank" rel="noopener">🚶 ${L({es:'Ir',en:'Go'})}</a>`);
+    });
+    info.innerHTML=`<p class="small muted">${nm} ${L({es:'accesos/estaciones y',en:'stations/entrances and'})} ${nb} ${L({es:'paradas de bus a menos de 500 m. Toca una para ver detalles.',en:'bus stops within 500 m. Tap one for details.'})}</p>`;
+  }catch(e){ info.innerHTML=`<p class="small muted">${L({es:'No se pudieron cargar las paradas. Intenta de nuevo en un momento.',en:'Could not load stops. Try again shortly.'})}</p>`; }
+}
+async function toggleTubeLines(forceOn){
+  initMap();
+  if(linesOn && !forceOn){ map.removeLayer(linesLayer); linesOn=false; return; }
+  if(linesLayer){ if(!linesOn) map.addLayer(linesLayer); linesOn=true; return; }
+  const btn=$('#btn-lines'); btn.disabled=true; const old=btn.innerHTML; btn.innerHTML='<span class="spin"></span>';
+  try{
+    let data = store.get('metro_geo',null);
+    if(!data || Date.now()-data.t>30*864e5){
+      const j = await overpass('[out:json][timeout:90];relation["route"~"subway|tram|aerialway|light_rail"](6.10,-75.72,6.42,-75.40);out geom;');
+      data = {t:Date.now(), r:(j.elements||[]).map(r=>({ref:String(r.tags?.ref||'').toUpperCase().replace(/^L[IÍ]NEA\s*/,''),name:r.tags?.name||'',col:r.tags?.colour||'',
+        w:(r.members||[]).filter(m=>m.type==='way'&&m.geometry&&!m.role).map(m=>m.geometry.map(g=>[+g.lat.toFixed(5),+g.lon.toFixed(5)])),
+        s:(r.members||[]).filter(m=>m.type==='node'&&/stop|station/.test(m.role||'')&&m.lat).map(m=>[+m.lat.toFixed(5),+m.lon.toFixed(5)])}))};
+      if(!data.r.length) throw 0;
+      store.set('metro_geo',data);
+    }
+    linesLayer=L_.layerGroup().addTo(map); linesOn=true;
+    data.r.forEach(r=>{
+      const col = LINE_COLORS[r.ref] || r.col || '#333';
+      const lay = lineLayers[r.ref] || (lineLayers[r.ref]=L_.featureGroup().addTo(linesLayer));
+      r.w.forEach(seg=>L_.polyline(seg,{color:col,weight:4,opacity:.9}).addTo(lay).bindTooltip(r.ref));
+      r.s.forEach(p=>L_.circleMarker(p,{radius:3,color:'#000',weight:1.2,fillColor:'#fff',fillOpacity:1}).addTo(lay));
+    });
+    $('#map-info').innerHTML=`<p class="small muted">${L({es:'Líneas del metro © colaboradores de OpenStreetMap.',en:'Metro lines © OpenStreetMap contributors.'})}</p>`;
+  }catch(e){
+    linesLayer=null; linesOn=false;
+    $('#map-info').innerHTML=`<p class="small muted">${L({es:'No se pudieron cargar las líneas ahora. Puedes ver el plano oficial en metrodemedellin.gov.co.',en:'Could not load the lines now. See the official map at metrodemedellin.gov.co.'})}</p>`;
+  }
+  btn.disabled=false; btn.innerHTML=old;
+}
+
+/* ---------- Español paisa: diálogos ----------
+   l: [quién, frase como se dice en Medellín, cómo lo dirías en Colombia/Latinoamérica ('' = igual), inglés] */
+const SITS = [
+ {id:'border',ic:'🛂',n:{es:'Migración en el aeropuerto',en:'Immigration at the airport'},ctx:{es:'Llegada al José María Córdova. Ten a mano pasaporte, tiquete de salida, dirección donde te quedas y, si aplica, tu visa.',en:'Arrival at JMC airport. Have passport, onward ticket, address and visa if needed.'},
+  l:[['A','Buenas. Pasaporte, por favor.','Buenos días. Su pasaporte, por favor.','Hello. Passport, please.'],
+     ['B','Buenas. Aquí está.','','Hello. Here it is.'],
+     ['A','¿A qué viene a Colombia?','¿Cuál es el motivo de su viaje?','What brings you to Colombia?'],
+     ['B','Vengo de turismo, a visitar a unos amigos en Medellín.','','Tourism, visiting friends in Medellín.'],
+     ['A','¿Cuántos días se va a quedar?','','How many days will you stay?'],
+     ['B','Treinta días. Aquí tengo el tiquete de regreso.','Treinta días. Aquí tengo el boleto de regreso.','Thirty days. Here is my return ticket.'],
+     ['A','Listo. Bienvenido a Colombia.','De acuerdo. Bienvenido.','Done. Welcome to Colombia.']],
+  tip:{es:'Como turista te dan normalmente hasta 90 días, que se pueden prorrogar hasta 180 en el año con Migración Colombia. Entrar como turista no permite trabajar.',en:'Tourists usually get up to 90 days, extendable to 180 a year. Tourist status does not allow work.'}},
+ {id:'metro',ic:'🚇',n:{es:'En el metro',en:'On the metro'},ctx:{es:'Comprando la Cívica y preguntando la ruta.',en:'Getting a Cívica and asking for directions.'},
+  l:[['B','Buenas, ¿me regala una tarjeta Cívica, por favor?','Hola, ¿me vende una tarjeta Cívica, por favor?','Hi, can I get a Cívica card, please?'],
+     ['A','Claro. ¿Cuánto le recargo?','Claro. ¿Cuánto le cargo?','Sure. How much shall I top up?'],
+     ['B','Veinte mil. ¿Y para ir a la Comuna 13 qué hago?','','20,000. How do I get to Comuna 13?'],
+     ['A','Coja la línea A hasta San Antonio y ahí cambia a la B hasta San Javier.','Tome la línea A hasta San Antonio y cambie a la B hasta San Javier.','Line A to San Antonio, then line B to San Javier.'],
+     ['B','¿Y de ahí cómo subo?','','And from there?'],
+     ['A','Ahí mismo coge el bus integrado o el metrocable. ¡Que le vaya bien!','Allí toma el bus integrado o el teleférico. ¡Buen viaje!','Take the integrated bus or cable car there. Have a good trip!']],
+  tip:{es:'En Medellín "¿me regala…?" es la forma amable de pedir algo, aunque lo vayas a pagar. "Coger" es tomar.',en:'In Medellín "¿me regala…?" is the polite way to ask for something, even if you pay.'}},
+ {id:'lost',ic:'🧭',n:{es:'Estoy perdido',en:'I\'m lost'},ctx:{es:'Pedir indicaciones en la calle.',en:'Asking for directions.'},
+  l:[['B','Qué pena con usted, ¿me puede ayudar? Estoy perdido.','Disculpe, ¿me puede ayudar? Estoy perdido.','Sorry to bother you, I\'m lost.'],
+     ['A','Claro, mi amor, ¿para dónde va?','Claro, ¿a dónde va?','Of course, dear, where are you going?'],
+     ['B','Para el Parque Lleras. ¿Queda muy lejos?','Al Parque Lleras. ¿Está muy lejos?','To Parque Lleras. Is it far?'],
+     ['A','No, pues, son como diez minuticos. Siga derecho y en la segunda cuadra voltea a la derecha.','No, unos diez minutos. Siga recto y en la segunda calle gire a la derecha.','About ten minutes. Go straight and turn right at the second block.'],
+     ['B','Listo, ¡muchas gracias!','Vale, ¡muchas gracias!','Great, thanks!'],
+     ['A','Con gusto, ¡que esté bien!','De nada.','You\'re welcome!']],
+  tip:{es:'"Qué pena con usted" = disculpe. "Mi amor", "mi reina", "papi" son trato cariñoso común con desconocidos, sin otra intención. "Cuadra" = manzana.',en:'"Qué pena con usted" = excuse me. Terms like "mi amor" are just friendly here.'}},
+ {id:'tienda',ic:'☕',n:{es:'En la tienda o la panadería',en:'At the corner shop'},ctx:{es:'Pedir un tinto y algo de comer.',en:'Ordering a coffee and a snack.'},
+  l:[['A','¡Buenas! ¿Qué le provoca?','¡Hola! ¿Qué desea?','Hi! What would you like?'],
+     ['B','¿Me regala un tinto y una arepa con quesito, por favor?','Me da un café negro y una arepa con queso, por favor.','A black coffee and an arepa with cheese, please.'],
+     ['A','Con mucho gusto. ¿Algo más?','','Of course. Anything else?'],
+     ['B','No, así está bien. ¿Cuánto es?','No, gracias. ¿Cuánto le debo?','That\'s all. How much?'],
+     ['A','Son cinco mil pesitos.','Son cinco mil pesos.','Five thousand pesos.'],
+     ['B','Listo, gracias. ¡Que esté bien!','','Thanks!']],
+  tip:{es:'"Tinto" es café negro (no vino). "Cinco lucas" = cinco mil pesos. Los diminutivos (pesitos, quesito, ahorita) son muy paisas.',en:'"Tinto" is black coffee. "Lucas" = thousands of pesos.'}},
+ {id:'super',ic:'🛒',n:{es:'En el supermercado',en:'At the supermarket'},ctx:{es:'Buscar productos y pagar.',en:'Finding products and paying.'},
+  l:[['B','Disculpe, ¿dónde encuentro la harina para arepas?','','Where is the arepa flour?'],
+     ['A','En el pasillo cinco, junto al arroz.','','Aisle five, by the rice.'],
+     ['B','¿Y el plátano maduro?','¿Y el plátano maduro?','And ripe plantain?'],
+     ['A','En fruver, al fondo.','En frutas y verduras, al fondo.','In fruit & veg at the back.'],
+     ['A','¿Le regalo una bolsa? Vale cien pesos.','¿Quiere bolsa? Cuesta cien pesos.','Bag? It costs 100 pesos.'],
+     ['B','Sí, por favor. ¿Recibe tarjeta o Nequi?','','Yes. Do you take card or Nequi?']],
+  tip:{es:'"Fruver" = sección de frutas y verduras. Nequi y Daviplata son las billeteras del celular que usa todo el mundo.',en:'Nequi and Daviplata are the popular phone wallets.'}},
+ {id:'pharm',ic:'💊',n:{es:'En la droguería',en:'At the pharmacy'},ctx:{es:'Algo para la gripa.',en:'Something for a cold.'},
+  l:[['B','Buenas, ¿qué me recomienda para la gripa?','Buenas, ¿qué me recomienda para el resfriado?','What do you recommend for a cold?'],
+     ['A','¿Tiene fiebre o tos?','','Fever or cough?'],
+     ['B','Tos y me duele la garganta.','','Cough and sore throat.'],
+     ['A','Le doy este jarabe y unas pastillas.','','This syrup and some tablets.'],
+     ['B','¿Necesito fórmula médica?','¿Necesito receta?','Do I need a prescription?'],
+     ['A','No para esto. Los antibióticos sí piden fórmula.','','Not for this. Antibiotics do.']],
+  tip:{es:'"Droguería" = farmacia. "Fórmula médica" = receta. "Gripa" = resfriado.',en:'"Droguería" = pharmacy; "fórmula" = prescription.'}},
+ {id:'health',ic:'🩺',n:{es:'Afiliarme a una EPS',en:'Joining an EPS (health insurer)'},ctx:{es:'En la oficina de una EPS.',en:'At an EPS office.'},
+  l:[['B','Buenos días, quiero afiliarme a la EPS.','','Good morning, I want to join the EPS.'],
+     ['A','¿Viene como trabajador o por el régimen subsidiado?','','As an employee or via the subsidised scheme?'],
+     ['B','Subsidiado. Ya tengo el PPT y la encuesta del SISBÉN.','','Subsidised. I have my PPT and SISBÉN survey.'],
+     ['A','Perfecto. Llene este formulario y le asignamos la IPS cerca de su casa.','','Fill in this form and we\'ll assign a clinic near you.'],
+     ['B','¿Y si me enfermo antes?','','What if I get ill before?'],
+     ['A','La atención de urgencias se la tienen que dar en cualquier hospital.','','Any hospital must treat emergencies.']],
+  tip:{es:'EPS = la aseguradora de salud. IPS = la clínica o centro de salud donde te atienden. Si trabajas con contrato, tu empleador te afilia al régimen contributivo.',en:'EPS = health insurer; IPS = clinic. Employers enrol workers in the contributory scheme.'}},
+ {id:'migra',ic:'📄',n:{es:'Cita en Migración Colombia',en:'Appointment at Migración'},ctx:{es:'Para sacar la cédula de extranjería.',en:'To get the foreigner ID.'},
+  l:[['A','Buenos días. ¿Tiene cita?','','Good morning. Do you have an appointment?'],
+     ['B','Sí, para expedir la cédula de extranjería. Aquí está mi visa y el pasaporte.','','Yes, to issue my foreigner ID. Here are my visa and passport.'],
+     ['A','¿Ya registró la visa en los quince días después de que se la dieron?','','Did you register the visa within fifteen days?'],
+     ['B','Sí, aquí tengo el comprobante.','','Yes, here is the receipt.'],
+     ['A','Listo, siga a la ventanilla tres para la foto y las huellas.','','Go to window three for photo and fingerprints.']],
+  tip:{es:'Las citas de Migración Colombia son por la web oficial. No pagues a tramitadores.',en:'Book only on the official website. Don\'t pay fixers.'}},
+ {id:'rent',ic:'🔑',n:{es:'Arrendar una pieza',en:'Renting a room'},ctx:{es:'Llamar por un aviso de arriendo.',en:'Calling about a rental ad.'},
+  l:[['B','Buenas, llamo por la pieza que arriendan. ¿Todavía está disponible?','Hola, llamo por la habitación en alquiler. ¿Sigue libre?','Is the room still available?'],
+     ['A','Sí, señor. Vale ochocientos mil con servicios incluidos.','Sí. Son 800.000 pesos con servicios incluidos.','Yes, 800,000 pesos with bills included.'],
+     ['B','¿Piden fiador o depósito?','','Do you need a guarantor or deposit?'],
+     ['A','Un fiador con finca raíz o la póliza de arrendamiento.','','A guarantor who owns property, or a rental insurance policy.'],
+     ['B','¿Puedo ir a verla hoy por la tarde?','','Can I see it this afternoon?'],
+     ['A','Listo, lo espero a las cuatro.','','See you at four.']],
+  tip:{es:'"Pieza" = habitación. "Fiador" o "codeudor" = quien responde si no pagas. La ley prohíbe exigir depósitos en dinero en arriendos de vivienda.',en:'"Fiador" = guarantor. Cash deposits for housing rentals are not allowed by law.'}},
+ {id:'job',ic:'💼',n:{es:'Entrevista de trabajo',en:'Job interview'},ctx:{es:'Para un restaurante.',en:'For a restaurant.'},
+  l:[['A','Cuénteme de su experiencia.','','Tell me about your experience.'],
+     ['B','Trabajé cuatro años de mesero en Caracas.','','Four years as a waiter in Caracas.'],
+     ['A','¿Tiene PPT o visa que le permita trabajar?','','Do you have a PPT or a work visa?'],
+     ['B','Sí, tengo el PPT vigente.','','Yes, a valid PPT.'],
+     ['A','El contrato es a término fijo con todas las prestaciones.','','Fixed-term contract with full benefits.'],
+     ['B','¿Me afilian a salud, pensión y ARL desde el primer día?','','Health, pension and work-risk insurance from day one?'],
+     ['A','Claro, así es la ley.','','Of course, that\'s the law.']],
+  tip:{es:'"Prestaciones" = prima, cesantías, vacaciones. ARL = seguro de riesgos laborales. Todo eso es obligatorio con contrato.',en:'Benefits (prima, cesantías, holidays) and ARL insurance are mandatory.'}},
+ {id:'police',ic:'👮',n:{es:'Poner una denuncia',en:'Reporting a theft'},ctx:{es:'En la Policía o en línea.',en:'At the police or online.'},
+  l:[['B','Buenas, me robaron el celular y quiero poner el denuncio.','Me robaron el teléfono y quiero denunciar.','My phone was stolen and I want to report it.'],
+     ['A','¿Dónde y a qué hora fue?','','Where and when?'],
+     ['B','En el centro, por Junín, como a las seis.','','Downtown, on Junín, around six.'],
+     ['A','¿Tiene el número IMEI?','','Do you have the IMEI?'],
+     ['B','Sí, aquí lo tengo en la caja.','','Yes, on the box.'],
+     ['A','Listo. Tome la constancia de la denuncia.','','Here is your report receipt.']],
+  tip:{es:'Puedes denunciar en la web de la Fiscalía o la Policía (denuncia virtual) o llamar al 123 si es una emergencia.',en:'You can report online (Fiscalía / Policía) or call 123 in emergencies.'}},
+ {id:'chat',ic:'👋',n:{es:'Charla con vecinos',en:'Chatting with neighbours'},ctx:{es:'Conociendo gente del barrio.',en:'Meeting neighbours.'},
+  l:[['A','¡Quiubo, vecino! ¿Usted es nuevo por aquí?','¡Hola, vecino! ¿Es nuevo aquí?','Hey neighbour! New around here?'],
+     ['B','Sí, llegué hace un mes. Soy de Venezuela.','','Yes, a month ago. I\'m from Venezuela.'],
+     ['A','¡Bienvenido, parce! ¿Y qué tal Medellín?','¡Bienvenido! ¿Qué le parece Medellín?','Welcome, mate! How is Medellín?'],
+     ['B','Muy bacano, la gente es muy amable.','Muy bonito, la gente es muy amable.','Great, people are very kind.'],
+     ['A','¡Hágale pues! Cualquier cosa me avisa.','¡Perfecto! Cualquier cosa me avisa.','Go for it! Let me know if you need anything.'],
+     ['B','¡De una, gracias!','¡Claro, gracias!','Sure, thanks!']],
+  tip:{es:'"Quiubo" = ¿qué hubo?, hola. "Parce" = amigo. "Bacano" = chévere. "¡Hágale!" = adelante. "¡De una!" = de inmediato, claro.',en:'"Quiubo" = hi. "Parce" = mate. "Bacano" = cool.'}}
+];
+const POCKET = [
+ ['¿Me regala un tinto, por favor?','Aquí "regalar" es la forma amable de pedir (lo pagas)','A black coffee, please'],
+ ['¿Cuánto vale?','¿Cuánto cuesta?','How much is it?'],
+ ['¿Recibe tarjeta o Nequi?','Pagos con tarjeta o billetera del celular','Do you take card or Nequi?'],
+ ['Qué pena con usted…','Disculpe / perdón','Sorry to bother you…'],
+ ['¿Me puede repetir más despacio?','','Could you repeat more slowly?'],
+ ['Estoy perdido','','I\'m lost'],
+ ['¡Llame al 123, por favor!','Línea única de emergencias en Colombia','Call 123!'],
+ ['Me robaron el celular','','My phone was stolen'],
+ ['Necesito un médico','','I need a doctor'],
+ ['¿Dónde queda la estación del metro?','"Queda" = está ubicado','Where is the metro station?'],
+ ['Listo / De una','Vale, de acuerdo','OK / Sure'],
+ ['¡Hágale pues!','¡Adelante!','Go for it!'],
+ ['Estoy buscando camello','Estoy buscando trabajo','I\'m looking for work'],
+ ['Que esté muy bien','Despedida amable','Take care']
+];
+const SLANG = [
+ ['Parce / parcero','Amigo, pana','Mate'],['Bacano','Chévere','Cool'],['¿Qué más pues?','¿Cómo estás?','How are you?'],
+ ['Pues','Muletilla paisa al final de todo','Filler word'],['Ome','¡Hombre! (exclamación)','Man!'],['Quiubo','¿Qué hubo?, hola','Hi'],
+ ['Tinto','Café negro','Black coffee'],['Pola','Cerveza','Beer'],['Guaro','Aguardiente','Anise liquor'],
+ ['Luca','Mil pesos','1,000 pesos'],['Un palo','Un millón de pesos','1 million pesos'],['Camello / camellar','Trabajo / trabajar','Job / to work'],
+ ['Pieza','Habitación','Room'],['Chuspa','Bolsa plástica','Plastic bag'],['Mecato','Snacks, golosinas','Snacks'],
+ ['Berraco','Muy difícil / muy valiente','Tough / brave'],['Chicharrón','Problema, lío','Mess, problem'],['Ñapa','Lo que te dan de más, gratis','A little extra'],
+ ['Dar papaya','Dar papaya = exponerse a un robo','Make yourself an easy target'],['A la orden','Para servirle (en tiendas)','At your service'],
+ ['¿Me regala…?','Forma amable de pedir (pagando)','Polite request'],['Ahorita','Ahora o más tarde… depende','Now or later'],
+ ['Fresco / tranquilo','No te preocupes','No worries'],['Hágale','Adelante, dale','Go ahead'],['De una','De inmediato, claro','Right away']
+];
+let curSit=null;
+function renderSits(){
+  $('#sits').innerHTML = SITS.map(s=>`<button class="sit ${curSit===s.id?'on':''}" onclick="openSit('${s.id}')"><span class="em">${s.ic}</span><b>${L(s.n)}</b></button>`).join('');
+  $('#pocket').innerHTML = POCKET.map((p,i)=>`<div class="pk"><div><div class="en">${esc(p[0])}</div><div class="es">${esc(LANG==='es'?p[1]:p[2])}</div></div><button class="say" onclick="speak(POCKET[${i}][0])">🔊</button></div>`).join('');
+  $('#slang').innerHTML = `<tr><th>${L({es:'En Medellín',en:'In Medellín'})}</th><th style="text-align:right">${L({es:'Significa',en:'Meaning'})}</th></tr>` + SLANG.map((s,i)=>`<tr><td><b>${esc(s[0])}</b> <button class="say" style="width:26px;height:26px;font-size:.7rem" onclick="speak(SLANG[${i}][0])">🔊</button></td><td style="font-weight:400;text-align:right">${esc(LANG==='es'?s[1]:s[2])}</td></tr>`).join('');
+  if(curSit) openSit(curSit,true);
+}
+function openSit(id,silent){
+  curSit=id; const s=SITS.find(x=>x.id===id);
+  document.querySelectorAll('.sit').forEach((b,i)=>b.classList.toggle('on',SITS[i].id===id));
+  $('#dlg-wrap').style.display='block';
+  $('#dlg-title').textContent = s.ic+' '+L(s.n);
+  $('#dlg-ctx').textContent = L(s.ctx);
+  const who = {A:{es:'Ellos',en:'Them'},B:{es:'Tú',en:'You'}};
+  $('#dlg').innerHTML = s.l.map((x,i)=>`<div class="bub ${x[0]}"><div class="head"><div><div class="who">${L(who[x[0]])}</div><div class="en">${esc(x[1])}</div></div><button class="say" onclick="speak(SITS.find(s=>s.id==='${id}').l[${i}][1])">🔊</button></div>${LANG==='es' ? (x[2]?`<div class="es">🌎 ${L({es:'Otra forma',en:'Elsewhere'})}: ${esc(x[2])}</div>`:'') : `<div class="es">${esc(x[3])}</div>`}</div>`).join('');
+  $('#dlg-tips').innerHTML = '💡 '+esc(L(s.tip));
+  if(!silent) $('#dlg-wrap').scrollIntoView({behavior:'smooth',block:'start'});
+}
+let voice=null;
+function pickVoice(){ const vs=speechSynthesis.getVoices(); voice = vs.find(v=>/^es-(CO|419|US|MX)$/.test(v.lang)) || vs.find(v=>/^es-(CO|US|MX)/.test(v.lang)) || vs.find(v=>/^es/.test(v.lang)) || null; }
+if('speechSynthesis' in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+function utter(text){ const u=new SpeechSynthesisUtterance(text); u.lang='es-CO'; if(voice) u.voice=voice; u.rate=+$('#rate').value||.9; return u; }
+function speak(text){
+  if(!('speechSynthesis' in window)){ toast(L({es:'Tu navegador no tiene voz',en:'No speech support'})); return; }
+  speechSynthesis.cancel(); const u=utter(text); speechSynthesis.speak(u); return u;
+}
+function playAll(){
+  const s=SITS.find(x=>x.id===curSit); if(!s||!('speechSynthesis' in window)) return; speechSynthesis.cancel(); let i=0;
+  const next=()=>{ if(i>=s.l.length) return; const u=utter(s.l[i][1]); u.onend=()=>{i++; setTimeout(next,350);}; speechSynthesis.speak(u); };
+  next();
+}
+
+/* ---------- SOS ---------- */
+const ORGS = [
+ {ic:'🤝',n:'Centro Intégrate Medellín',d:{es:'De la Alcaldía con ACNUR y OIM, en Prado Centro: regularización, empleo, educación, salud, asesoría legal y apoyo psicosocial para migrantes, refugiados y retornados.',en:'City centre with UNHCR and IOM: regularisation, jobs, education, health, legal and psychosocial support.'},web:'https://www.medellin.gov.co'},
+ {ic:'🛂',n:'Migración Colombia',d:{es:'Cédula de extranjería, PPT, salvoconductos, prórrogas de permanencia. Citas solo por la web oficial; es gratis agendar.',en:'Foreigner ID, PPT, safe-conducts, stay extensions. Appointments online only.'},web:'https://www.migracioncolombia.gov.co'},
+ {ic:'🏛️',n:'Cancillería — Visas y nacionalidad',d:{es:'Visas V, M y R, refugio y nacionalidad colombiana por adopción. Trámites en línea.',en:'Visas, refugee status and naturalisation. Online.'},web:'https://www.cancilleria.gov.co'},
+ {ic:'🌍',n:'ACNUR (UNHCR) Colombia',d:{es:'Protección para refugiados y migrantes, información sobre refugio y apoyo.',en:'Protection for refugees and migrants.'},web:'https://www.acnur.org/colombia'},
+ {ic:'🧭',n:'OIM (IOM) Colombia',d:{es:'Orientación migratoria, integración y empleo.',en:'Migration guidance, integration and jobs.'},web:'https://colombia.iom.int'},
+ {ic:'❤️',n:'Cruz Roja Colombiana — Antioquia',d:{es:'Atención humanitaria y en salud para migrantes.',en:'Humanitarian and health assistance.'},web:'https://www.cruzrojaantioquia.org'},
+ {ic:'⚖️',n:'Defensoría del Pueblo',d:{es:'Defiende tus derechos frente a abusos, también siendo migrante. Gratis.',en:'Defends your rights. Free.'},web:'https://www.defensoria.gov.co'},
+ {ic:'🎓',n:'Consultorios jurídicos de universidades',d:{es:'Asesoría legal gratuita (U. de Antioquia, UPB, EAFIT, U. de Medellín…): contratos, arriendos, trabajo, familia.',en:'Free legal advice from university law clinics.'}},
+ {ic:'💜',n:'Línea 155 — Orientación a mujeres',d:{es:'Violencia contra la mujer. Gratis, 24 h.',en:'Violence against women. Free, 24/7.'},tel:[['155','155']]},
+ {ic:'🧒',n:'ICBF — Línea 141',d:{es:'Si un niño o niña está en riesgo. Gratis, 24 h.',en:'Children at risk. Free, 24/7.'},tel:[['141','141']]},
+ {ic:'🧾',n:'Fiscalía — Línea 122',d:{es:'Denuncias de delitos.',en:'Crime reports.'},tel:[['122','122']]}
+];
+const SOSACC = [
+ {t:{es:'🛂 Perdí el pasaporte',en:'🛂 I lost my passport'},b:{es:'<ol><li>Pon la denuncia (Policía o denuncia virtual) y guarda la constancia.</li><li>Contacta el consulado de tu país en Medellín o Bogotá.</li><li>Informa a Migración Colombia si tenías visa o PPT asociado al pasaporte.</li><li>Guarda desde ya fotos de tus documentos en tu correo.</li></ol>',en:'<ol><li>Report it.</li><li>Contact your consulate.</li><li>Inform Migración Colombia.</li></ol>'}},
+ {t:{es:'📱 Me robaron el celular',en:'📱 Phone stolen'},b:{es:'<ol><li>Bloquéalo (Buscar mi iPhone / Encontrar mi dispositivo).</li><li>Llama a tu operador para bloquear la línea y el IMEI.</li><li>Pon la denuncia.</li><li>Cambia claves de correo, bancos, Nequi y WhatsApp.</li></ol>',en:'<ol><li>Lock it, block SIM and IMEI, report it, change passwords.</li></ol>'}},
+ {t:{es:'🤒 Me enfermé',en:'🤒 I got sick'},b:{es:'<ul class="dots"><li><b>Leve:</b> droguería.</li><li><b>No urgente:</b> tu IPS (centro de salud de tu EPS).</li><li><b>Urgente:</b> urgencias de cualquier hospital: la atención inicial de urgencias es obligatoria para todos, también migrantes sin papeles.</li><li><b>Grave:</b> 123.</li></ul>',en:'<ul class="dots"><li>Pharmacy, your clinic, any A&E (must treat everyone), 123.</li></ul>'}},
+ {t:{es:'👮 Me paró la policía',en:'👮 Police stopped me'},b:{es:'<ul class="dots"><li>Lleva siempre tu documento (pasaporte, PPT o cédula de extranjería) o una copia.</li><li>Mantén la calma. Tienes derecho a saber por qué te paran.</li><li>Si te detienen, tienes derecho a un abogado (defensor público gratis) y a avisar a tu consulado.</li></ul>',en:'<ul class="dots"><li>Carry ID. If detained you get a free public defender and consular contact.</li></ul>'}},
+ {t:{es:'💸 No me pagan / me explotan',en:'💸 Unpaid or exploited'},b:{es:'<ul class="dots"><li>Guarda pruebas: mensajes, horarios, pagos.</li><li>Acude al Ministerio del Trabajo (inspección de trabajo) o a un consultorio jurídico universitario: gratis.</li><li>Ser migrante no te quita los derechos laborales.</li></ul>',en:'<ul class="dots"><li>Keep evidence; go to the Labour Ministry or a university law clinic.</li></ul>'}},
+ {t:{es:'💰 Me ofrecen un préstamo "gota a gota"',en:'💰 "Gota a gota" loans'},b:{es:'<p>Son préstamos ilegales con intereses altísimos y cobros con amenazas. <b>No los aceptes.</b> Si ya estás atrapado y te amenazan, denuncia al 123 o en la Fiscalía (122). Busca microcréditos legales en bancos o cooperativas.</p>',en:'<p>Illegal loan-sharking with threats. Don\'t take them; report threats to 123 / 122.</p>'}},
+ {t:{es:'📄 Dudas de papeles',en:'📄 Immigration questions'},b:{es:'<ul class="dots"><li>Información oficial solo en <b>migracioncolombia.gov.co</b> y <b>cancilleria.gov.co</b>.</li><li>Asesoría gratis en el Centro Intégrate, ACNUR, OIM y consultorios jurídicos.</li><li>⚠️ Nunca pagues a "tramitadores" que prometen PPT o visas rápidas.</li><li>Mira el módulo <a href="javascript:go(\'papers\')">Papeles</a>.</li></ul>',en:'<ul class="dots"><li>Official sites only; free advice at Intégrate, UNHCR, IOM; never pay fixers.</li></ul>'}}
+];
+function renderSOS(){
+  $('#orgs').innerHTML = ORGS.map(o=>`<div class="org"><div class="ic">${o.ic}</div><div style="flex:1;min-width:0"><b>${esc(o.n)}</b><div class="small muted">${esc(L(o.d))}</div><div class="acts">${(o.tel||[]).map(t=>`<a class="btn sm red" style="color:#fff" href="tel:${t[1]}">📞 ${esc(t[0])}</a>`).join('')}${o.web?`<a class="btn sm ghost" href="${o.web}" target="_blank" rel="noopener">🌐 Web</a>`:''}${o.mail?`<a class="btn sm ghost" href="mailto:${o.mail}">✉️</a>`:''}</div></div></div>`).join('');
+  renderAcc($('#sos-acc'),SOSACC);
+}
+
+/* ---------- Papeles ---------- */
+const PAPERS = [
+ ['🛬',{es:'Entrada como turista (PIP)',en:'Tourist entry (PIP)'},{es:'La mayoría de latinoamericanos entra sin visa con pasaporte. Te dan normalmente hasta 90 días, prorrogables hasta 180 en el año calendario con Migración Colombia. No permite trabajar.',en:'Most Latin Americans enter visa-free for up to 90 days, extendable to 180 a year. No work allowed.'},'#EB0A1E'],
+ ['🎫',{es:'Visa (V, M o R)',en:'Visa (V, M or R)'},{es:'Se pide en línea a la Cancillería. <b>V</b> = visitante; <b>M</b> = migrante (trabajo, cónyuge de colombiano, Mercosur…); <b>R</b> = residente. La visa R suele pedirse tras 5 años con visa M (2 años si eres cónyuge de colombiano o por Mercosur).',en:'Apply online to the Foreign Ministry. V visitor, M migrant, R resident (usually after 5 years on M, or 2 for spouses or Mercosur).'},'#0067B1'],
+ ['📝',{es:'Registro de la visa',en:'Register your visa'},{es:'Las visas de más de 3 meses se registran en Migración Colombia en los 15 días calendario siguientes. Si no lo haces, te pueden multar.',en:'Visas over 3 months must be registered with Migración within 15 days.'},'#C77700'],
+ ['🪪',{es:'Cédula de extranjería',en:'Foreigner ID card'},{es:'Tu documento en Colombia: con ella abres cuentas, firmas contratos y te afilias a salud. Se pide con cita en Migración Colombia.',en:'Your ID in Colombia for banking, contracts and health. Appointment at Migración.'},'#0A8A3A'],
+ ['🇻🇪',{es:'Venezolanos: PPT',en:'Venezuelans: PPT'},{es:'El Permiso por Protección Temporal funciona como documento de identificación y permite trabajar, estudiar y afiliarse a salud. Revisa en Migración Colombia las opciones vigentes (PEP Tutor, visa de visitante especial).',en:'The PPT is your ID and allows work, study and health access. Check current options with Migración.'},'#6E6E76']
+];
+const PAPERSACC = [
+ {t:{es:'🇻🇪 PEP Tutor (hasta el 31 de diciembre de 2026)',en:'🇻🇪 PEP Tutor (until 31 Dec 2026)'},b:{es:'<p>Para padres, madres o cuidadores venezolanos de niños y adolescentes que tienen PPT vigente y que no tienen ellos mismos PPT ni visa. El plazo para pedirlo se amplió hasta el <b>31 de diciembre de 2026</b>. La solicitud es gratis al inicio y solo se paga si te lo aprueban. Permite trabajar, estudiar y abrir cuentas.</p>',en:'<p>For Venezuelan parents or carers of children with a valid PPT who have no PPT or visa themselves. Deadline extended to <b>31 December 2026</b>. Free to apply; pay only if approved.</p>'}},
+ {t:{es:'🇻🇪 Visa de visitante especial',en:'🇻🇪 Special visitor visa'},b:{es:'<p>La Cancillería creó en diciembre de 2024 una visa de visitante especial para venezolanos que entraron antes de esa fecha y firmaron acta de compromiso con Migración. Cuesta alrededor de $148.000 y permite trabajar y sacar cédula de extranjería. Según lo publicado, la medida va hasta el <b>4 de diciembre de 2026</b>: si te aplica, no lo dejes para última hora.</p>',en:'<p>Special visitor visa for Venezuelans who entered before Dec 2024 and signed a commitment with Migración. About COP 148,000; allows work. The measure runs until <b>4 December 2026</b>.</p>'}},
+ {t:{es:'⚠️ Visas R antiguas: traspaso antes del 31 de octubre de 2026',en:'⚠️ Old R visas: transfer by 31 Oct 2026'},b:{es:'<p>Si tienes visa de residente expedida con normas anteriores, la Cancillería pide hacer el traspaso a la norma actual antes del <b>31 de octubre de 2026</b>, solo por los canales oficiales en línea.</p>',en:'<p>Holders of R visas under older rules must transfer them by <b>31 October 2026</b>, online only.</p>'}},
+ {t:{es:'🛡️ Refugio',en:'🛡️ Refugee status'},b:{es:'<p>Si en tu país corres peligro por persecución o violencia, puedes pedir refugio ante la Cancillería. Mientras se estudia te dan un salvoconducto (SC-2). ACNUR te orienta gratis.</p>',en:'<p>Apply to the Foreign Ministry; you get a safe-conduct while it is studied. UNHCR helps for free.</p>'}},
+ {t:{es:'🔗 Webs oficiales',en:'🔗 Official sites'},b:{es:'<ul class="dots"><li><a href="https://www.migracioncolombia.gov.co" target="_blank" rel="noopener">migracioncolombia.gov.co</a> — PPT, cédula de extranjería, citas</li><li><a href="https://www.cancilleria.gov.co" target="_blank" rel="noopener">cancilleria.gov.co</a> — visas, refugio y nacionalidad</li><li><a href="https://www.medellin.gov.co" target="_blank" rel="noopener">medellin.gov.co</a> — Centro Intégrate, SISBÉN y servicios</li></ul>',en:'<ul class="dots"><li>migracioncolombia.gov.co</li><li>cancilleria.gov.co</li><li>medellin.gov.co</li></ul>'}}
+];
+
+/* ---------- Checklist ---------- */
+const CHECK = [
+ {es:'Revisar si necesito visa en cancilleria.gov.co (la mayoría de latinoamericanos entra sin visa como turista)',en:'Check visa rules at cancilleria.gov.co'},
+ {es:'Pasaporte vigente, tiquete de salida y dirección donde me voy a quedar',en:'Valid passport, onward ticket, address'},
+ {es:'Seguro médico de viaje (mientras me afilio a una EPS)',en:'Travel insurance until I join an EPS'},
+ {es:'Fotos de mis documentos guardadas en el correo',en:'Document photos in my email'},
+ {es:'Enchufe tipo A/B (como en EE. UU.), 110 V',en:'Type A/B plugs, 110 V'},
+ {es:'SIM o eSIM colombiana (Claro, Movistar, Tigo, WOM)',en:'Colombian SIM or eSIM'},
+ {es:'Sacar y personalizar la tarjeta Cívica',en:'Get a personalised Cívica card'},
+ {es:'Guardar mi dirección en esta app',en:'Save my address in this app'},
+ {es:'Guardar los números: 123, 155, 141 y Migración',en:'Save 123, 155, 141 and Migración'},
+ {es:'Si voy a quedarme: visa o PPT, y registrarla en Migración en 15 días',en:'Staying: visa or PPT, registered within 15 days'},
+ {es:'Sacar la cédula de extranjería',en:'Get the foreigner ID'},
+ {es:'Hacer la encuesta del SISBÉN y afiliarme a una EPS',en:'SISBÉN survey and join an EPS'},
+ {es:'Abrir Nequi o Daviplata y cuenta bancaria',en:'Open Nequi/Daviplata and a bank account'},
+ {es:'Ir al Centro Intégrate para orientación gratis',en:'Visit Centro Intégrate for free guidance'}
+];
+function renderCheck(){
+  const done = store.get('chk',[]);
+  $('#checklist').innerHTML = CHECK.map((c,i)=>`<label class="chk ${done.includes(i)?'done':''}"><input type="checkbox" ${done.includes(i)?'checked':''} onchange="toggleChk(${i})"><span class="t">${esc(L(c))}</span></label>`).join('');
+  const pct = Math.round(done.length/CHECK.length*100);
+  $('#prog').style.width=pct+'%';
+  $('#prog-t').textContent = `${done.length}/${CHECK.length} — ${pct}%`;
+}
+function toggleChk(i){ let d=store.get('chk',[]); d = d.includes(i)? d.filter(x=>x!==i) : [...d,i]; store.set('chk',d); renderCheck(); }
+const VISA = [
+ {t:{es:'🌎 ¿Necesito visa?',en:'🌎 Do I need a visa?'},b:{es:'<p>Los ciudadanos de la mayoría de países latinoamericanos entran a Colombia sin visa como turistas. Algunos países sí la necesitan. Revisa tu caso en <a href="https://www.cancilleria.gov.co" target="_blank" rel="noopener">cancilleria.gov.co</a> antes de comprar el tiquete.</p>',en:'<p>Most Latin Americans enter visa-free as tourists; check yours at cancilleria.gov.co.</p>'}},
+ {t:{es:'🧳 Qué llevar a migración',en:'🧳 What to carry'},b:{es:'<ul class="dots"><li>Pasaporte vigente</li><li>Tiquete de salida o regreso</li><li>Dirección de alojamiento</li><li>Prueba de fondos si te la piden</li><li>Seguro médico de viaje</li></ul>',en:'<ul class="dots"><li>Passport, onward ticket, address, funds, insurance.</li></ul>'}},
+ {t:{es:'⏳ Cuánto me puedo quedar',en:'⏳ How long can I stay'},b:{es:'<p>Como turista, normalmente hasta 90 días. Puedes pedir prórroga en línea a Migración Colombia hasta completar 180 días en el año. Quedarte más tiempo sin permiso genera multas.</p>',en:'<p>Usually 90 days, extendable to 180 per year. Overstaying means fines.</p>'}},
+ {t:{es:'⚠️ Cuidado con webs falsas',en:'⚠️ Fake websites'},b:{es:'<p>Las visas solo se piden en cancilleria.gov.co y los trámites migratorios en migracioncolombia.gov.co.</p>',en:'<p>Use only official .gov.co sites.</p>'}}
+];
+
+/* ---------- Money ---------- */
+let RATES=null;
+const CUR = ['COP','USD','VES','EUR','PEN','ARS','MXN','CLP','BOB','DOP'];
+async function loadRates(){
+  try{
+    const {data}=await getJSON('https://open.er-api.com/v6/latest/USD');
+    if(data?.result!=='success') throw 0;
+    RATES=data.rates; store.set('rates',{r:RATES,t:data.time_last_update_unix});
+  }catch(e){ const c=store.get('rates',null); if(c) RATES=c.r; }
+  renderFX();
+}
+const fmt=(n,c)=>new Intl.NumberFormat(LANG==='es'?'es-CO':'en-GB',{style:'currency',currency:c,maximumFractionDigits:['COP','CLP'].includes(c)?0:2}).format(n);
+function renderFX(){
+  if(document.getElementById('pay-out')) try{renderPay();}catch(e){}
+  const c=store.get('rates',null);
+  if(!RATES){ $('#fx-main').innerHTML=`<span class="small muted">${L({es:'Sin conexión para tasas.',en:'No connection for rates.'})}</span>`; return; }
+  $('#fx-main').innerHTML = `<div style="font-family:'Barlow Condensed';font-size:2rem;font-weight:800">US$1 = ${fmt(RATES.COP,'COP')}</div><div class="small">1 € = ${fmt(RATES.COP/RATES.EUR,'COP')} · 1 Bs = ${fmt(RATES.COP/RATES.VES,'COP')}</div>`;
+  if(c?.t) $('#fx-upd').textContent = L({es:'Actualizado',en:'Updated'})+': '+tz(new Date(c.t*1000),'America/Bogota',{dateStyle:'medium',timeStyle:'short'})+' (COL) · ExchangeRate-API';
+  const sel=$('#fx-from'); if(!sel.options.length) sel.innerHTML=CUR.map(x=>`<option>${x}</option>`).join('');
+  const amt=+$('#fx-amt').value||0, from=sel.value||'COP', inEUR = amt / (from==='USD'?1:RATES[from]);
+  $('#fx-results').innerHTML = CUR.filter(x=>x!==from).map(x=>`<div class="arr"><span>${x}</span><b>${fmt(inEUR*(x==='USD'?1:RATES[x]),x)}</b></div>`).join('');
+  $('#wage-cop').textContent = '≈ '+fmt(1750905/RATES.COP,'USD')+' '+L({es:'al mes',en:'per month'});
+}
+const MONEY_TIPS = [
+ {es:'Personaliza la Cívica: ahorras $580 en cada viaje de metro.',en:'Personalise your Cívica to save COP 580 per trip.'},
+ {es:'El "corrientazo" o menú del día al almuerzo es la forma más barata de comer.',en:'The lunchtime "corrientazo" set menu is cheapest.'},
+ {es:'Mercados baratos: D1, Ara, Isimo y la Plaza Minorista para frutas y verduras.',en:'Cheap: D1, Ara, Isimo, Plaza Minorista.'},
+ {es:'Nequi y Daviplata permiten enviar y recibir plata gratis entre celulares.',en:'Nequi and Daviplata send money free.'},
+ {es:'Paga en pesos cuando el datáfono pregunte; en dólares sale más caro.',en:'Pay in pesos, not dollars.'},
+ {es:'Muchos museos y parques son gratis (Museo Casa de la Memoria, parques, bibliotecas).',en:'Many museums and parks are free.'},
+ {es:'Nunca pidas préstamos "gota a gota".',en:'Never take "gota a gota" loans.'}
+];
+
+/* ---------- Culture ---------- */
+const CULTURE = [
+ ['🤗',{es:'Amables y cariñosos',en:'Warm and friendly'},{es:'Los paisas saludan, preguntan cómo estás y te tratan de "mi amor", "mi reina" o "parce" aunque no te conozcan. Es amabilidad, no confianza excesiva.',en:'Paisas are warm; terms of endearment are normal.'}],
+ ['🙏',{es:'"¿Me regala…?"',en:'"¿Me regala…?"'},{es:'Aquí es la forma educada de pedir algo en una tienda, aunque lo pagues. Y responden "con mucho gusto".',en:'The polite way to order; reply is "con mucho gusto".'}],
+ ['☕',{es:'Tinto y arepa',en:'Coffee and arepa'},{es:'El tinto (café negro) se toma a toda hora. La arepa paisa es delgada y sin sal; la bandeja paisa es el plato típico.',en:'Black coffee all day; thin arepas; bandeja paisa.'}],
+ ['🚇',{es:'Cultura Metro',en:'Metro culture'},{es:'El metro es el orgullo de la ciudad: no se come, no se raya, se cede el puesto. Respétalo y te ganarás a los paisas.',en:'The metro is a source of pride; keep it clean.'}],
+ ['🌸',{es:'Feria de las Flores',en:'Flower Festival'},{es:'En agosto: desfile de silleteros, música y fiestas por toda la ciudad.',en:'August: the silleteros parade and festivities.'}],
+ ['🎄',{es:'Alumbrados navideños',en:'Christmas lights'},{es:'En diciembre la ciudad se ilumina; el 7 de diciembre se celebra la noche de las velitas.',en:'December lights; 7 Dec is the night of candles.'}],
+ ['🏠',{es:'Los estratos',en:'Strata'},{es:'Las viviendas tienen estrato del 1 al 6: define el precio de los servicios públicos y muchos subsidios. El 1 es el más bajo.',en:'Homes are classed 1–6, which sets utility prices and subsidies.'}],
+ ['🚗',{es:'Pico y placa',en:'Pico y placa'},{es:'Los carros y motos no pueden circular ciertos días según el último número de la placa.',en:'Vehicles are restricted by plate number on certain days.'}],
+ ['⏰',{es:'Puntualidad flexible',en:'Flexible time'},{es:'En lo social, "ya voy" puede ser media hora. En el trabajo sí exigen puntualidad.',en:'Socially relaxed, at work punctual.'}],
+ ['💃',{es:'Rumba',en:'Nightlife'},{es:'Salsa, reguetón y vallenato. Las zonas de rumba más conocidas son El Poblado (Parque Lleras, Provenza), Laureles (La 70) y Envigado.',en:'Salsa, reggaeton; Poblado, Laureles, Envigado.'}]
+];
+
+/* ---------- Safety ---------- */
+const SAFETY = [
+ {t:{es:'📱 "No dar papaya"',en:'📱 "Don\'t give papaya"'},b:{es:'<p>Es la regla de oro: no muestres el celular en la calle, en el bus ni en semáforos; no lo dejes sobre la mesa. El robo de celulares es el delito más común.</p>',en:'<p>Don\'t flash your phone in the street or leave it on tables.</p>'}},
+ {t:{es:'💊 Citas por aplicaciones',en:'💊 Dating apps'},b:{es:'<p>Hay casos de personas drogadas con escopolamina ("burundanga") en citas de apps para robarlas. Encuéntrate en lugares públicos, no dejes tu bebida sola y avisa a alguien dónde estás.</p>',en:'<p>Some app dates have involved scopolamine drugging and robbery. Meet in public and watch your drink.</p>'}},
+ {t:{es:'🚕 Taxis',en:'🚕 Taxis'},b:{es:'<p>Pide taxi por app o por teléfono. Evita parar taxis en la calle de noche, sobre todo en zonas de rumba.</p>',en:'<p>Use apps or call; avoid street hails at night.</p>'}},
+ {t:{es:'🎭 Estafas comunes',en:'🎭 Common scams'},b:{es:'<ul class="dots"><li>Arriendos que piden plata antes de ver el lugar.</li><li>"Tramitadores" que venden PPT, visas o citas.</li><li>Ofertas de trabajo que piden pagar para empezar.</li><li>Préstamos "gota a gota".</li><li>Mensajes falsos de bancos o Nequi pidiendo claves.</li></ul>',en:'<ul class="dots"><li>Fake rentals, fixers, paid jobs, loan sharks, phishing.</li></ul>'}},
+ {t:{es:'🌙 De noche',en:'🌙 At night'},b:{es:'<p>El centro (Parque Berrío, Junín, San Antonio) es muy movido de día pero se vacía de noche: evita caminar solo por ahí tarde. Comparte tu ubicación.</p>',en:'<p>Downtown empties at night; avoid walking alone late.</p>'}}
+];
+
+/* ---------- Media ---------- */
+const GALLERY = [
+ ['Comuna_13,_Medellín','Comuna 13',6.2565,-75.6195],['Plaza_Botero','Plaza Botero',6.2522,-75.5687],['Medellín_Metrocable','Metrocable',6.2930,-75.5470],
+ ['Parque_Arví','Parque Arví',6.2810,-75.5010],['Pueblito_Paisa','Pueblito Paisa',6.2350,-75.5800],['Museo_de_Antioquia','Museo de Antioquia',6.2525,-75.5690],
+ ['Medellín_Metro','Metro de Medellín',6.2448,-75.5742],['Jardín_Botánico_de_Medellín','Jardín Botánico',6.2706,-75.5648],['Parque_Explora','Parque Explora',6.2695,-75.5660],
+ ['El_Poblado','El Poblado',6.2087,-75.5675],['Guatapé','Guatapé',6.2333,-75.1586],['Piedra_del_Peñol','Piedra del Peñol',6.2203,-75.1786],
+ ['Biblioteca_España','Parque Biblioteca España',6.2930,-75.5450],['Medellín','Medellín',6.2442,-75.5812],['Silletero','Silleteros',6.2442,-75.5812]
+];
+const VIDEOS = [
+ [{es:'Cómo usar el metro de Medellín y la Cívica',en:'How to use Medellín metro and Cívica'},'como usar el metro de medellin tarjeta civica'],
+ [{es:'Del aeropuerto de Rionegro a Medellín',en:'Rionegro airport to Medellín'},'aeropuerto jose maria cordova a medellin bus'],
+ [{es:'Cómo sacar la cédula de extranjería',en:'How to get the foreigner ID'},'como sacar cedula de extranjeria colombia'],
+ [{es:'Venezolanos viviendo en Medellín',en:'Venezuelans living in Medellín'},'venezolanos viviendo en medellin'],
+ [{es:'Caminata por Medellín 4K',en:'Medellín walking tour 4K'},'medellin walking tour 4k 2026'],
+ [{es:'Palabras paisas para entender a Medellín',en:'Paisa slang explained'},'palabras paisas explicadas']
+];
+/* Fotos reales de Wikipedia / Wikimedia Commons.
+   Wikimedia solo sirve miniaturas en tamaños estándar (250, 330, 500, 960, 1280…),
+   así que pedimos URLs a la API oficial y probamos cada foto antes de mostrarla. */
+const IMGC = store.get('img3',{});
+const IMG_PENDING = {};
+const sized = (u,w)=> /\/thumb\//.test(u) ? u.replace(/\/\d+px-([^/]+)$/, `/${w}px-$1`) : u;
+function probe(u){ return new Promise(res=>{ if(!u) return res(false); const i=new Image(); const t=setTimeout(()=>res(false),12000); i.onload=()=>{clearTimeout(t);res(i.naturalWidth>1);}; i.onerror=()=>{clearTimeout(t);res(false);}; i.referrerPolicy='no-referrer'; i.src=u; }); }
+async function wikiBatch(titles){
+  const need=[...new Set(titles)].filter(t=>t && !IMGC[t] && !IMG_PENDING[t]);
+  for(let i=0;i<need.length;i+=40){
+    const chunk=need.slice(i,i+40);
+    const job=(async()=>{
+      try{
+        const url='https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&origin=*&redirects=1&prop=pageimages&piprop=thumbnail|original&pithumbsize=500&titles='+encodeURIComponent(chunk.map(t=>t.replace(/_/g,' ')).join('|'));
+        const {data}=await getJSON(url);
+        const q=data?.query||{}; const map={};
+        (q.normalized||[]).forEach(n=>map[n.from]=n.to);
+        (q.redirects||[]).forEach(r=>map[r.from]=r.to);
+        const pages={}; (q.pages||[]).forEach(pg=>pages[pg.title]=pg);
+        chunk.forEach(t=>{ let k=t.replace(/_/g,' '); for(let n=0;n<3&&map[k];n++) k=map[k]; const pg=pages[k];
+          if(pg&&(pg.thumbnail||pg.original)) IMGC[t]={t:pg.thumbnail?.source||'',o:pg.original?.source||''}; });
+        store.set('img3',IMGC);
+      }catch(e){}
+    })();
+    chunk.forEach(t=>IMG_PENDING[t]=job);
+    await job; chunk.forEach(t=>delete IMG_PENDING[t]);
+  }
+  await Promise.all(titles.map(t=>IMG_PENDING[t]).filter(Boolean));
+}
+async function commonsSearch(q){
+  try{
+    const url='https://commons.wikimedia.org/w/api.php?action=query&format=json&formatversion=2&origin=*&generator=search&gsrnamespace=6&gsrlimit=3&gsrsearch='+encodeURIComponent(q+' filetype:bitmap')+'&prop=imageinfo&iiprop=url&iiurlwidth=500';
+    const {data}=await getJSON(url);
+    const pg=(data?.query?.pages||[]).sort((a,b)=>a.index-b.index).find(x=>x.imageinfo?.[0]?.thumburl);
+    return pg?{t:pg.imageinfo[0].thumburl,o:pg.imageinfo[0].url}:null;
+  }catch(e){ return null; }
+}
+/* Devuelve una URL que SÍ carga (o null). big=true para la foto grande. */
+async function wikiImg(title,w=500,fallbackQuery){
+  await wikiBatch([title]);
+  let r=IMGC[title];
+  const cands = r ? (w>500 ? [sized(r.t,960), r.t, r.o] : [r.t, sized(r.t,330), r.o]) : [];
+  for(const c of [...new Set(cands)]) if(await probe(c)) return c;
+  const cs = await commonsSearch(fallbackQuery || title.replace(/_/g,' ').replace(/,.*$/,'')+' Medellín');
+  if(cs){ for(const c of (w>500?[sized(cs.t,960),cs.t,cs.o]:[cs.t,cs.o])) if(await probe(c)){ IMGC[title]=cs; store.set('img3',IMGC); return c; } }
+  return null;
+}
+
+let galDone=false;
+function loadGallery(){
+  if(galDone) return; galDone=true;
+  $('#gallery').innerHTML = GALLERY.map((g,i)=>`<div class="ph" id="ph${i}" onclick="flyTo(${g[2]},${g[3]})"><div class="ph-fb"><span class="spin" style="position:static;background:none;padding:0"></span></div><span>${esc(g[1])}</span></div>`).join('');
+  GALLERY.forEach(async (g,i)=>{
+    const el=$('#ph'+i);
+    try{ const src=await wikiImg(g[0],500,g[1]+' Medellín'); if(!src) throw 0;
+      el.querySelector('.ph-fb').outerHTML = `<img alt="${esc(g[1])}" src="${src}" referrerpolicy="no-referrer">`;
+    }catch(e){ el.querySelector('.ph-fb').innerHTML='📷'; }
+  });
+  renderVideos();
+}
+function renderVideos(){
+  $('#vlinks').innerHTML = VIDEOS.map(v=>`<a class="vlink" href="https://www.youtube.com/results?search_query=${encodeURIComponent(v[1])}" target="_blank" rel="noopener"><span class="play">▶</span><span><b>${esc(L(v[0]))}</b><br><small class="muted">YouTube</small></span></a>`).join('');
+}
+function flyTo(lat,lng){ go('map'); setTimeout(()=>{ map.setView([lat,lng],16); },250); }
+async function loadHero(){
+  try{ const src=await wikiImg('Medellín',960,'Medellin skyline'); if(src){ $('#hero').style.backgroundImage=`url("${src}")`; $('#hero-credit').textContent='Foto: Wikimedia Commons'; } }catch(e){}
+}
+
+/* ---------- Weather (Open-Meteo) ---------- */
+const WMO = c=> c===0?['☀️',{es:'Despejado',en:'Clear'}]: c<=3?['⛅',{es:'Parcialmente nublado',en:'Partly cloudy'}]: c<=48?['🌫️',{es:'Niebla',en:'Fog'}]: c<=57?['🌦️',{es:'Llovizna',en:'Drizzle'}]: c<=67?['🌧️',{es:'Lluvia',en:'Rain'}]: c<=77?['🌨️',{es:'Nieve',en:'Snow'}]: c<=82?['🌧️',{es:'Aguaceros',en:'Showers'}]:['⛈️',{es:'Tormenta',en:'Storm'}];
+let WX=null;
+async function loadWeather(){
+  try{ const {data}=await getJSON('https://api.open-meteo.com/v1/forecast?latitude=6.2442&longitude=-75.5812&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max&timezone=America%2FBogota&forecast_days=4');
+    if(!data?.current) throw 0; WX=data; store.set('wx',data);
+  }catch(e){ WX=store.get('wx',null); }
+  renderWeather();
+}
+function renderWeather(){
+  if(!WX){ $('#wx').innerHTML=`<span class="small">${L({es:'Sin datos del clima.',en:'No weather data.'})}</span>`; return; }
+  const c=WX.current, w=WMO(c.weather_code);
+  $('#wx').innerHTML = `<span style="font-size:2.6rem">${w[0]}</span><div><div class="t">${Math.round(c.temperature_2m)}°C</div><div class="small" style="opacity:.8">${L(w[1])} · ${L({es:'sensación',en:'feels'})} ${Math.round(c.apparent_temperature)}°</div></div>`;
+  const d=WX.daily;
+  $('#wx-days').innerHTML = d.time.slice(1,4).map((t,i)=>{ const k=i+1; return `<div>${tz(new Date(t+'T12:00:00Z'),'America/Bogota',{weekday:'short'})}<br>${WMO(d.weather_code[k])[0]}<br><b>${Math.round(d.temperature_2m_max[k])}°</b>/${Math.round(d.temperature_2m_min[k])}°<br>💧${d.precipitation_probability_max[k]??0}%</div>`; }).join('');
+  const rain = d.precipitation_probability_max[0]>=40, cold = c.temperature_2m<10, hot = d.temperature_2m_max[0]>=32, uv=(d.uv_index_max?.[0]??0)>=7;
+  $('#wx-tip').textContent = (rain? L({es:'☔ Lleva sombrilla hoy. ',en:'☔ Take an umbrella today. '}):'') + (cold? L({es:'🧥 Hace frío: abrígate por capas. ',en:'🧥 It\'s cold: wear layers. '}):'') + (hot? L({es:'🥵 Mucho calor: agua, sombra y evita el sol del mediodía. ',en:'🥵 Very hot: water, shade, avoid midday sun. '}):'') + (uv&&!hot? L({es:'🧴 Sol fuerte: usa protector.',en:'🧴 Strong sun: wear sunscreen.'}):'');
+}
+
+/* ---------- My address ---------- */
+function saveAddr(){ const v=$('#my-addr').value.trim(); store.set('addr',v); toast(v?L({es:'Dirección guardada ✓',en:'Address saved ✓'}):L({es:'Dirección borrada',en:'Address cleared'})); }
+function routeHome(){
+  const a=store.get('addr',''); if(!a){ toast(L({es:'Primero guarda tu dirección',en:'Save your address first'})); return; }
+  go('transit'); $('#j-from').value=''; $('#j-to').value=a; destLabel=L({es:'🏠 Casa',en:'🏠 Home'}); planJourney();
+}
+function openShow(){ const a=store.get('addr',''); $('#show-addr').textContent = a || L({es:'(Guarda tu dirección en Inicio)',en:'(Save your address on Home)'}); $('#showcard').classList.add('on'); }
+
+
+/* =========================================================
+   LUGARES DE INTERÉS
+   free: 1 = gratis · 2 = gratis a ciertas horas / parte gratis · 0 = de pago
+   ========================================================= */
+const PCATS = {
+  all:{ic:'⭐',n:{es:'Todos',en:'All'}}, free:{ic:'🆓',n:{es:'Gratis',en:'Free'}},
+  museo:{ic:'🖼️',n:{es:'Museos',en:'Museums'}}, monu:{ic:'🏛️',n:{es:'Íconos',en:'Landmarks'}},
+  parque:{ic:'🌳',n:{es:'Parques',en:'Parks'}}, mercado:{ic:'🛍️',n:{es:'Mercados',en:'Markets'}},
+  barrio:{ic:'🏘️',n:{es:'Barrios',en:'Neighbourhoods'}}, vista:{ic:'🌄',n:{es:'Miradores',en:'Viewpoints'}},
+  ninos:{ic:'🧒',n:{es:'Con niños',en:'With kids'}}, excursion:{ic:'🚌',n:{es:'Excursiones',en:'Day trips'}},
+  latino:{ic:'🫓',n:{es:'Comunidad migrante',en:'Migrant community'}}, fav:{ic:'❤️',n:{es:'Mis lugares',en:'My places'}}
+};
+const LUGARES = [
+ {id:'comuna13',n:'Comuna 13 (escaleras eléctricas y grafitis)',w:'Comuna_13,_Medellín',es:'Comuna_13_(Medellín)',lat:6.2565,lng:-75.6195,c:['barrio','vista'],free:1,st:'Metro San Javier + bus integrado',web:'',
+  d:{es:'El barrio que se transformó con escaleras eléctricas al aire libre, grafitis y música. Símbolo de la nueva Medellín.',en:'The neighbourhood transformed by outdoor escalators, graffiti and hip-hop.'},
+  tip:{es:'Ve de día y con un guía local de la comuna: tu plata se queda en el barrio.',en:'Go by day with a local guide.'}},
+ {id:'botero',n:'Plaza Botero',w:'Plaza_Botero',es:'Plaza_Botero',lat:6.2522,lng:-75.5687,c:['monu'],free:1,st:'Parque Berrío',web:'',
+  d:{es:'23 esculturas gigantes de Fernando Botero al aire libre, frente al Palacio de la Cultura.',en:'23 giant Botero sculptures in the open air.'},
+  tip:{es:'Gratis. Cuida el celular: hay mucha gente.',en:'Free. Watch your phone.'}},
+ {id:'antioquia',n:'Museo de Antioquia',w:'Museo_de_Antioquia',es:'Museo_de_Antioquia',lat:6.2525,lng:-75.5690,c:['museo'],free:0,st:'Parque Berrío',web:'https://www.museodeantioquia.co',
+  d:{es:'La gran colección de Botero y arte antioqueño, junto a la plaza.',en:'Major Botero collection and Antioquian art.'},
+  tip:{es:'Revisa días con entrada especial o descuento.',en:'Check discount days.'}},
+ {id:'memoria',n:'Museo Casa de la Memoria',w:'Museo_Casa_de_la_Memoria',es:'Museo_Casa_de_la_Memoria',lat:6.2453,lng:-75.5600,c:['museo'],free:1,st:'Tranvía Bicentenario',web:'https://www.museocasadelamemoria.gov.co',
+  d:{es:'Museo sobre el conflicto armado y las víctimas, para entender la historia reciente de la ciudad.',en:'Museum on the armed conflict and its victims.'},
+  tip:{es:'Entrada gratis.',en:'Free.'}},
+ {id:'pueblito',n:'Pueblito Paisa (cerro Nutibara)',w:'Pueblito_Paisa',es:'Pueblito_Paisa',lat:6.2350,lng:-75.5800,c:['vista','monu'],free:1,st:'Metro Industriales + caminata/taxi',web:'',
+  d:{es:'Réplica de un pueblo antioqueño en la cima de un cerro, con vista de toda la ciudad.',en:'Replica Antioquian village on a hill with city views.'},
+  tip:{es:'Sube al atardecer.',en:'Go at sunset.'}},
+ {id:'arvi',n:'Parque Arví (Metrocable L)',w:'Parque_Arví',es:'Parque_Arví',lat:6.2810,lng:-75.5010,c:['parque','ninos','vista'],free:0,st:'Metro Acevedo → cable K → cable L',web:'https://parquearvi.org',
+  d:{es:'Bosque y senderos en las montañas, con mercado campesino. Llegar en metrocable sobre la ciudad ya es el plan.',en:'Forest park reached by cable car over the city.'},
+  tip:{es:'El cable L tiene tarifa especial (más cara para extranjeros). Cerrado los lunes en general; verifica antes.',en:'Line L has a special fare. Check opening days.'}},
+ {id:'botanico',n:'Jardín Botánico',w:'Jardín_Botánico_de_Medellín',es:'Jardín_Botánico_Joaquín_Antonio_Uribe',lat:6.2706,lng:-75.5648,c:['parque','ninos'],free:1,st:'Universidad',web:'https://www.botanicomedellin.org',
+  d:{es:'Orquídeas, lago, mariposario y el "Orquideorama".',en:'Orchids, lake, butterfly house.'},
+  tip:{es:'Entrada general gratis.',en:'Free general entry.'}},
+ {id:'explora',n:'Parque Explora y Planetario',w:'Parque_Explora',es:'Parque_Explora',lat:6.2695,lng:-75.5660,c:['museo','ninos'],free:0,st:'Universidad',web:'https://www.parqueexplora.org',
+  d:{es:'Museo interactivo de ciencia con el acuario de agua dulce más grande de Suramérica.',en:'Interactive science museum with a big aquarium.'},
+  tip:{es:'Combínalo con el Jardín Botánico y el Parque de los Deseos.',en:'Combine with the Botanical Garden.'}},
+ {id:'deseos',n:'Parque de los Deseos',w:'Parque_de_los_Deseos',es:'Parque_de_los_Deseos',lat:6.2687,lng:-75.5655,c:['parque','ninos'],free:1,st:'Universidad',web:'',
+  d:{es:'Plaza con juegos de agua y cine al aire libre, junto al Planetario.',en:'Square with water play and open-air cinema.'},
+  tip:{es:'Gratis; hay actividades los fines de semana.',en:'Free weekend activities.'}},
+ {id:'piesdescalzos',n:'Parque de los Pies Descalzos',w:'Parque_de_los_Pies_Descalzos',es:'Parque_de_los_Pies_Descalzos',lat:6.2448,lng:-75.5780,c:['parque','ninos'],free:1,st:'Alpujarra',web:'',
+  d:{es:'Parque para caminar descalzo entre agua, arena y bambú, junto al Edificio Inteligente.',en:'Barefoot park with water, sand and bamboo.'},
+  tip:{es:'Lleva toalla si vas con niños.',en:'Bring a towel for kids.'}},
+ {id:'poblado',n:'El Poblado y Parque Lleras',w:'El_Poblado',es:'El_Poblado',lat:6.2087,lng:-75.5675,c:['barrio'],free:1,st:'Poblado',web:'',
+  d:{es:'Zona de restaurantes, cafés y rumba; Provenza y el Parque Lleras son lo más turístico.',en:'Restaurants, cafés and nightlife.'},
+  tip:{es:'Es la zona más cara. De noche, cuidado con las pertenencias.',en:'Priciest area; mind your things at night.'}},
+ {id:'laureles',n:'Laureles y La 70',w:'Laureles,_Medellín',es:'Laureles_(Medellín)',lat:6.2450,lng:-75.5900,c:['barrio'],free:1,st:'Estadio',web:'',
+  d:{es:'Barrio residencial y arborizado, con la carrera 70 llena de comida y rumba más paisa.',en:'Leafy area; La 70 for food and nightlife.'},
+  tip:{es:'Buen barrio para vivir: plano y bien ubicado.',en:'A good area to live.'}},
+ {id:'atanasio',n:'Estadio Atanasio Girardot',w:'Estadio_Atanasio_Girardot',es:'Estadio_Atanasio_Girardot',lat:6.2566,lng:-75.5903,c:['monu','ninos'],free:0,st:'Estadio',web:'',
+  d:{es:'Casa de Nacional y Medellín. Alrededor está la Unidad Deportiva para hacer ejercicio gratis.',en:'Home of Nacional and Medellín; free sports complex around it.'},
+  tip:{es:'Ve a un clásico con alguien que conozca el ambiente.',en:'Go to a derby with someone local.'}},
+ {id:'tresruces',n:'Cerro de las Tres Cruces',w:'Cerro_de_las_Tres_Cruces',es:'Cerro_de_las_Tres_Cruces',lat:6.2265,lng:-75.6050,c:['vista'],free:1,st:'Belén (bus o taxi)',web:'',
+  d:{es:'Caminata de ejercicio de los paisas con vista de la ciudad.',en:'Locals\' workout hike with city views.'},
+  tip:{es:'Sube temprano en la mañana y acompañado.',en:'Go early and with company.'}},
+ {id:'biblioteca',n:'Parque Biblioteca España (Santo Domingo)',w:'Biblioteca_España',es:'Parque_Biblioteca_España',lat:6.2930,lng:-75.5450,c:['monu','vista'],free:1,st:'Metrocable K: Santo Domingo',web:'',
+  d:{es:'Los edificios negros sobre la montaña que se volvieron símbolo de la transformación social.',en:'Iconic black library buildings on the hillside.'},
+  tip:{es:'Combínalo con el paseo en Metrocable K.',en:'Combine with cable car K.'}},
+ {id:'minorista',n:'Plaza Minorista',w:'Plaza_Minorista',es:'Plaza_Minorista_José_María_Villa',lat:6.2583,lng:-75.5718,c:['mercado'],free:1,st:'Prado / Hospital',web:'',
+  d:{es:'La gran plaza de mercado: frutas tropicales, carnes y comida barata.',en:'Big food market with tropical fruit and cheap food.'},
+  tip:{es:'Ve de día y prueba las frutas que no conoces.',en:'Go by day; try new fruits.'}},
+ {id:'envigado',n:'Envigado (Parque Principal)',w:'Envigado',es:'Envigado',lat:6.1717,lng:-75.5917,c:['barrio'],free:1,st:'Metro Envigado',web:'',
+  d:{es:'Municipio vecino con ambiente de pueblo, parque principal y vida de barrio.',en:'Neighbouring town with a village feel.'},
+  tip:{es:'Más tranquilo y buen sitio para vivir.',en:'Quieter, good for living.'}},
+ {id:'guatape',n:'Guatapé y la Piedra del Peñol',w:'Guatapé',es:'Guatapé',lat:6.2333,lng:-75.1586,c:['excursion','vista'],free:0,st:'Bus desde Terminal del Norte (~2 h)',web:'',
+  d:{es:'Pueblo de zócalos de colores junto a un embalse, y la Piedra del Peñol con 740 escalones y vista espectacular.',en:'Colourful town and the Peñol Rock with 740 steps.'},
+  tip:{es:'Subir la piedra se paga. Sal temprano para evitar filas.',en:'Climbing the rock is paid; go early.'}},
+ {id:'santafe',n:'Santa Fe de Antioquia',w:'Santa_Fe_de_Antioquia',es:'Santa_Fe_de_Antioquia',lat:6.5564,lng:-75.8275,c:['excursion'],free:1,st:'Bus desde Terminal del Norte (~1 h 30)',web:'',
+  d:{es:'Pueblo colonial de calles empedradas, clima caliente y el Puente de Occidente.',en:'Colonial town, hot climate, Western Bridge.'},
+  tip:{es:'Lleva ropa fresca: hace mucho calor.',en:'Pack light clothes.'}},
+ {id:'centro',n:'Centro: Junín y Parque Berrío',w:'Parque_Berrío',es:'Parque_Berrío',lat:6.2510,lng:-75.5680,c:['latino','barrio'],free:1,st:'Parque Berrío',web:'',
+  d:{es:'El corazón comercial de la ciudad, con mucho comercio popular y gran presencia de la comunidad venezolana.',en:'Commercial heart with a large Venezuelan community.'},
+  tip:{es:'De día es muy movido; de noche se vacía.',en:'Busy by day, empty at night.'}},
+ {id:'bello',n:'Bello',w:'Bello,_Antioquia',es:'Bello_(Antioquia)',lat:6.3373,lng:-75.5579,c:['latino','barrio'],free:1,st:'Metro Bello / Niquía',web:'',
+  d:{es:'Municipio vecino al norte, con arriendos más baratos y mucha población migrante.',en:'Northern town with cheaper rents and many migrants.'},
+  tip:{es:'Conectado por la línea A del metro.',en:'On metro line A.'}}
+];
+const ITINS = [
+ {id:'centro',ic:'🗿',n:{es:'Centro y Botero',en:'Downtown & Botero'},s:{es:'Historia y arte',en:'History and art'},stops:['botero','antioquia','minorista','piesdescalzos','memoria']},
+ {id:'gratis',ic:'🆓',n:{es:'Medellín gratis',en:'Free Medellín'},s:{es:'Un día sin pagar entradas',en:'No tickets needed'},stops:['botanico','deseos','botero','piesdescalzos','memoria']},
+ {id:'cables',ic:'🚡',n:{es:'Metrocables y Arví',en:'Cable cars & Arví'},s:{es:'La ciudad desde el aire',en:'The city from above'},stops:['biblioteca','arvi']},
+ {id:'comuna',ic:'🎨',n:{es:'Comuna 13 y atardecer',en:'Comuna 13 & sunset'},s:{es:'Grafiti y mirador',en:'Graffiti and views'},stops:['comuna13','pueblito']},
+ {id:'ninos',ic:'🧒',n:{es:'Con niños',en:'With kids'},s:{es:'Ciencia, flores y agua',en:'Science, flowers, water'},stops:['explora','botanico','deseos','piesdescalzos']},
+ {id:'guatape',ic:'🪨',n:{es:'Guatapé',en:'Guatapé'},s:{es:'Excursión de un día',en:'Day trip'},stops:['guatape']}
+];
+let plFilter='all', plOrder=null;
+const plMine = ()=>store.get('pl',{}); // {id:'want'|'done'}
+function plTag(p){ return p.free===1?`<span class="pill ok">${L({es:'GRATIS',en:'FREE'})}</span>`: p.free===2?`<span class="pill warn">${L({es:'Gratis a ciertas horas',en:'Free at set times'})}</span>`:`<span class="pill">${L({es:'De pago',en:'Paid'})}</span>`; }
+function renderPlaces(){
+  const mine=plMine(), q=($('#pl-q').value||'').trim().toLowerCase();
+  $('#pl-chips').innerHTML = Object.entries(PCATS).map(([k,c])=>`<button class="chip ${plFilter===k?'on':''}" onclick="plFilter='${k}';renderPlaces()">${c.ic} ${L(c.n)}</button>`).join('');
+  let list = LUGARES.filter(p=>{
+    if(plFilter==='free' && p.free!==1) return false;
+    if(plFilter==='fav' && !mine[p.id]) return false;
+    if(!['all','free','fav'].includes(plFilter) && !p.c.includes(plFilter)) return false;
+    if(q && !(p.n+' '+L(p.d)+' '+p.st).toLowerCase().includes(q)) return false;
+    return true;
+  });
+  if(plOrder) list.sort((a,b)=>plOrder[a.id]-plOrder[b.id]);
+  $('#st-total').textContent=LUGARES.length;
+  $('#st-free').textContent=LUGARES.filter(p=>p.free===1).length;
+  const v=Object.values(mine); $('#st-mine').textContent=`${v.filter(x=>x==='want').length}/${v.filter(x=>x==='done').length}`;
+  $('#places').innerHTML = list.length ? list.map(p=>{
+    const m=mine[p.id];
+    return `<article class="plc">
+      <div class="plc-img" id="pimg-${p.id}" onclick="openPlace('${p.id}')"><div class="ph-fb">📷</div>${m?`<span class="plc-mark">${m==='done'?'✓ '+L({es:'Ya fui',en:'Visited'}):'❤️ '+L({es:'Quiero ir',en:'Want to go'})}</span>`:''}</div>
+      <div class="plc-body">
+        <div class="row" style="justify-content:space-between;align-items:start"><h3 onclick="openPlace('${p.id}')" style="cursor:pointer">${esc(p.n)}</h3>${plTag(p)}</div>
+        <div class="small muted">🚇 ${esc(p.st)}${plOrder?` · ${plOrder[p.id]<1?Math.round(plOrder[p.id]*1000)+' m':plOrder[p.id].toFixed(1)+' km'}`:''}</div>
+        <p class="small mt">${esc(L(p.d))}</p>
+        <div class="row mt" style="flex-wrap:wrap;gap:6px">
+          <button class="btn sm red" onclick="openPlace('${p.id}')">${L({es:'Ver más',en:'More'})}</button>
+          <button class="btn sm ghost" onclick="routeTo('${p.id}')">🧭</button>
+          <button class="btn sm ghost" onclick="flyTo(${p.lat},${p.lng})">🗺️</button>
+          <button class="btn sm ghost" onclick="toggleMine('${p.id}')" title="${L({es:'Quiero ir / Ya fui',en:'Want / Visited'})}">${m==='want'?'❤️':m==='done'?'✅':'🤍'}</button>
+        </div>
+      </div></article>`;
+  }).join('') : `<p class="muted mt">${L({es:'No hay lugares con ese filtro.',en:'No places match.'})}</p>`;
+  wikiBatch(list.map(p=>p.w)).then(()=>list.forEach(async p=>{ try{ const src=await wikiImg(p.w,500,p.n+' Medellín'); const el=document.getElementById('pimg-'+p.id); if(src&&el){ const fb=el.querySelector('.ph-fb'); if(fb) fb.outerHTML=`<img alt="${esc(p.n)}" src="${src}" referrerpolicy="no-referrer">`; } }catch(e){} }));
+  $('#itins').innerHTML = ITINS.map(it=>`<button class="tile" onclick="showItin('${it.id}')"><span class="em">${it.ic}</span><b>${L(it.n)}</b><small>${L(it.s)} · ${it.stops.length} ${L({es:'paradas',en:'stops'})}</small><small class="muted">${it.stops.map(id=>LUGARES.find(p=>p.id===id).n).join(' → ')}</small></button>`).join('');
+}
+function toggleMine(id){ const m=plMine(); m[id] = !m[id]?'want': m[id]==='want'?'done':undefined; if(!m[id]) delete m[id]; store.set('pl',m); renderPlaces(); toast(m[id]==='want'?'❤️ '+L({es:'Guardado en "Quiero ir"',en:'Saved to "Want to go"'}):m[id]==='done'?'✅ '+L({es:'Marcado como visitado',en:'Marked visited'}):L({es:'Quitado de tu lista',en:'Removed'})); }
+function haversine(a,b,c,d){ const R=6371,r=x=>x*Math.PI/180; const dl=r(c-a),dn=r(d-b); const h=Math.sin(dl/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(dn/2)**2; return 2*R*Math.asin(Math.sqrt(h)); }
+async function sortNear(){
+  if(plOrder){ plOrder=null; renderPlaces(); return; }
+  try{ const c=await getPos(); plOrder={}; LUGARES.forEach(p=>plOrder[p.id]=haversine(c.latitude,c.longitude,p.lat,p.lng)); plFilter='all'; renderPlaces(); toast(L({es:'Ordenados del más cercano al más lejano',en:'Sorted by distance'})); }
+  catch(e){ toast(L({es:'Activa la ubicación del celular',en:'Turn on location'})); }
+}
+function routeTo(id){ const p=LUGARES.find(x=>x.id===id); closePlace(); go('transit'); $('#j-from').value=''; $('#j-to').value=`${p.lat},${p.lng}`; destLabel=p.n; planJourney(); }
+async function wikiSummary(p){
+  const lang = LANG==='es'?'es':'en', title = LANG==='es'?p.es:p.w;
+  const key='ws_'+lang+'_'+p.id, c=store.get(key,null); if(c) return c;
+  try{ const {data}=await getJSON(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`); if(data?.extract){ const r={x:data.extract,u:data.content_urls?.mobile?.page||''}; store.set(key,r); return r; } }catch(e){}
+  return null;
+}
+async function openPlace(id){
+  const p=LUGARES.find(x=>x.id===id), m=plMine()[id];
+  $('#pl-sheet').innerHTML = `<div class="sheet-img" id="sheet-img"><button class="sheet-x" onclick="closePlace()">✕</button></div>
+   <div style="padding:18px">
+    <div class="row" style="justify-content:space-between;align-items:start"><h2 style="font-size:1.6rem">${esc(p.n)}</h2>${plTag(p)}</div>
+    <div class="row mt" style="gap:6px"><button class="say" onclick="speak('${jsq(p.n)}')">🔊</button><span class="small muted">${L({es:'Escucha cómo se pronuncia',en:'Hear the pronunciation'})}</span></div>
+    <p class="mt">${esc(L(p.d))}</p>
+    <div class="notice mt">💡 ${esc(L(p.tip))}</div>
+    <p class="small mt">🚇 <b>${L({es:'Estación',en:'Station'})}:</b> ${esc(p.st)}</p>
+    <div class="mt" id="sheet-wiki"><span class="spin"></span></div>
+    <div class="grid g2 keep mt" style="grid-template-columns:1fr 1fr">
+      <button class="btn red" onclick="routeTo('${p.id}')">🧭 ${L({es:'Cómo llegar',en:'Directions'})}</button>
+      <button class="btn" onclick="closePlace();flyTo(${p.lat},${p.lng})">🗺️ ${L({es:'Ver en mapa',en:'On the map'})}</button>
+      <button class="btn ghost" onclick="toggleMine('${p.id}');openPlace('${p.id}')">${m==='want'?'❤️ '+L({es:'Quiero ir',en:'Want to go'}):m==='done'?'✅ '+L({es:'Ya fui',en:'Visited'}):'🤍 '+L({es:'Guardar',en:'Save'})}</button>
+      ${p.web?`<a class="btn ghost" href="${p.web}" target="_blank" rel="noopener">🌐 ${L({es:'Web oficial',en:'Official site'})}</a>`:`<a class="btn ghost" href="https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}" target="_blank" rel="noopener">📍 Google Maps</a>`}
+    </div>
+   </div>`;
+  $('#pl-modal').classList.add('on'); document.body.style.overflow='hidden';
+  wikiImg(p.w,960,p.n+' Medellín').then(src=>{ if(src) $('#sheet-img').style.backgroundImage=`url("${src}")`; }).catch(()=>{});
+  const ws=await wikiSummary(p);
+  const box=$('#sheet-wiki'); if(!box) return;
+  box.innerHTML = ws ? `<h3>📖 ${L({es:'Un poco de historia',en:'A bit of history'})}</h3><p class="small mt">${esc(ws.x)}</p>${ws.u?`<a class="small" href="${ws.u}" target="_blank" rel="noopener">Wikipedia →</a>`:''}` : '';
+}
+function closePlace(){ $('#pl-modal').classList.remove('on'); document.body.style.overflow=''; }
+let itinLayer=null;
+function showItin(id){
+  const it=ITINS.find(x=>x.id===id); go('map');
+  setTimeout(()=>{
+    if(!L_||!map) return;
+    if(itinLayer) map.removeLayer(itinLayer);
+    itinLayer=L_.layerGroup().addTo(map);
+    const pts=it.stops.map(s=>LUGARES.find(p=>p.id===s));
+    L_.polyline(pts.map(p=>[p.lat,p.lng]),{color:'#EB0A1E',weight:5,dashArray:'8 8'}).addTo(itinLayer);
+    pts.forEach((p,i)=>L_.marker([p.lat,p.lng],{icon:L_.divIcon({className:'',html:`<div class="num">${i+1}</div>`,iconSize:[28,28],iconAnchor:[14,14]})}).addTo(itinLayer).bindPopup(`<b>${i+1}. ${esc(p.n)}</b><br><small>${esc(L(p.tip))}</small><br><button class="btn sm red mt" onclick="openPlace('${p.id}')">${L({es:'Ver más',en:'More'})}</button>`));
+    map.fitBounds(L_.latLngBounds(pts.map(p=>[p.lat,p.lng])),{padding:[40,40]});
+    $('#map-info').innerHTML = `<div class="card"><h3>${it.ic} ${L(it.n)}</h3><ol class="mt" style="padding-left:20px">${pts.map(p=>`<li><a href="javascript:openPlace('${p.id}')">${esc(p.n)}</a> <small class="muted">— 🚇 ${esc(p.st)}</small></li>`).join('')}</ol><button class="btn sm ghost mt" onclick="map.removeLayer(itinLayer);document.getElementById('map-info').innerHTML=''">✕ ${L({es:'Quitar ruta',en:'Clear route'})}</button></div>`;
+  },300);
+}
+
+/* =========================================================
+   SALUD (COLOMBIA)
+   ========================================================= */
+const LADDER = [
+ ['💊',{es:'Droguería',en:'Pharmacy'},{es:'Gripa, dolor de cabeza, alergias. Te atienden sin cita.',en:'Minor ailments, no appointment.'},'#0A8A3A'],
+ ['🩺',{es:'Tu IPS (centro de salud de la EPS)',en:'Your clinic (IPS)'},{es:'Consulta general, exámenes y remisiones. Pide cita por la app o la línea de tu EPS.',en:'GP visits and referrals via your EPS.'},'#0067B1'],
+ ['🏥',{es:'Urgencias de un hospital o clínica',en:'Hospital A&E'},{es:'La atención inicial de urgencias es obligatoria para todas las personas, también migrantes sin afiliación. Te clasifican por gravedad ("triage").',en:'Initial emergency care is mandatory for everyone, insured or not.'},'#C77700'],
+ ['🚑',{es:'123',en:'123'},{es:'Emergencias graves: dolor de pecho, no respira, accidente, sangrado fuerte.',en:'Serious emergencies.'},'#EB0A1E']
+];
+const HEALTHACC = [
+ {t:{es:'📝 Cómo afiliarme a salud',en:'📝 How to join the health system'},b:{es:'<ul class="dots"><li><b>Si trabajas con contrato:</b> tu empleador te afilia al régimen contributivo (EPS) desde el primer día.</li><li><b>Si trabajas por tu cuenta:</b> te afilias y pagas como independiente.</li><li><b>Si no tienes ingresos:</b> haces la encuesta del SISBÉN en la Alcaldía y, según el puntaje, te afilias al régimen subsidiado (gratis).</li><li>Necesitas un documento válido: PPT, cédula de extranjería o salvoconducto. El pasaporte solo sirve para menores de 7 años.</li></ul>',en:'<ul class="dots"><li>Employees: employer enrols you.</li><li>Self-employed: pay as independent.</li><li>No income: SISBÉN survey → subsidised scheme.</li><li>You need a PPT, foreigner ID or safe-conduct.</li></ul>'}},
+ {t:{es:'🚑 Sin papeles',en:'🚑 Without papers'},b:{es:'<p>Mientras regularizas tu situación, tienes derecho a la <b>atención inicial de urgencias</b> en cualquier hospital. Las mujeres embarazadas y los niños tienen además programas de vacunación y control. Pide orientación en el Centro Intégrate.</p>',en:'<p>You are entitled to initial emergency care. Pregnant women and children have vaccination and check-up programmes.</p>'}},
+ {t:{es:'🧠 Salud mental',en:'🧠 Mental health'},b:{es:'<p>Migrar es duro. Pide cita de psicología por tu EPS o apoyo psicosocial gratis en el Centro Intégrate. En crisis llama al 123.</p>',en:'<p>Ask your EPS for psychology or Centro Intégrate for free support. Crisis: 123.</p>'}},
+ {t:{es:'🤰 Embarazo y niños',en:'🤰 Pregnancy & children'},b:{es:'<ul class="dots"><li>Control prenatal y vacunas para niños sin costo.</li><li>Todos los niños tienen derecho a estudiar en colegio público, tengan o no papeles: pregunta en la Secretaría de Educación.</li></ul>',en:'<ul class="dots"><li>Free prenatal care and child vaccines.</li><li>All children can attend public school, papers or not.</li></ul>'}}
+];
+
+/* =========================================================
+   TRABAJO Y ESTUDIO
+   ========================================================= */
+const WORKACC = [
+ {t:{es:'✅ ¿Puedo trabajar?',en:'✅ Can I work?'},b:{es:'<p>Solo con un documento que lo permita: PPT, visa M o R, o algunas visas V. Como turista no se puede trabajar.</p>',en:'<p>Only with a PPT or a visa that allows it. Tourists cannot work.</p>'}},
+ {t:{es:'💵 Tus derechos básicos',en:'💵 Your basic rights'},b:{es:'<ul class="dots"><li>Salario mínimo 2026: <b>$1.750.905</b> al mes + auxilio de transporte de <b>$249.095</b> si ganas hasta dos mínimos.</li><li>Jornada máxima: <b>42 horas semanales</b> desde el 15 de julio de 2026.</li><li>Prima de servicios (dos pagos al año), cesantías e intereses, y 15 días hábiles de vacaciones.</li><li>Afiliación a salud, pensión y ARL desde el primer día.</li><li>Nadie puede quedarse con tu documento.</li></ul>',en:'<ul class="dots"><li>2026 minimum wage COP 1,750,905 + transport allowance 249,095.</li><li>42-hour week from 15 July 2026.</li><li>Prima, cesantías, 15 working days\' holiday, health/pension/ARL.</li></ul>'}},
+ {t:{es:'🔎 Dónde buscar',en:'🔎 Where to look'},b:{es:'<ul class="dots"><li>Agencia Pública de Empleo del SENA y Comfama / Comfenalco.</li><li>Portales: Computrabajo, elempleo, LinkedIn.</li><li>Centro Intégrate y OIM tienen rutas de empleo para migrantes.</li></ul>',en:'<ul class="dots"><li>SENA public employment agency, Comfama, job portals, Intégrate.</li></ul>'}},
+ {t:{es:'📚 Estudiar gratis',en:'📚 Free study'},b:{es:'<ul class="dots"><li>El <b>SENA</b> ofrece cursos técnicos y tecnológicos gratuitos, también para migrantes regulares.</li><li>Las bibliotecas públicas de Medellín (parques biblioteca) son gratis.</li></ul>',en:'<ul class="dots"><li>SENA free technical courses; public libraries.</li></ul>'}},
+ {t:{es:'🎓 Convalidar mi título',en:'🎓 Degree recognition'},b:{es:'<p>Los títulos universitarios se convalidan ante el Ministerio de Educación Nacional y los de bachillerato ante la Secretaría de Educación. Necesitas los documentos apostillados.</p>',en:'<p>University degrees via the Ministry of Education; diplomas must be apostilled.</p>'}}
+];
+const SMI_HOUR = 1750905/(42*52/12); // ≈ $9.620 la hora con jornada de 42 h
+function renderPay(){
+  const r=+$('#pay-rate').value||0, h=+$('#pay-hours').value||0, wk=r*h, mo=wk*52/12, yr=wk*52;
+  const low = r>0 && r<SMI_HOUR;
+  const e=n=>fmt(n,'COP');
+  $('#pay-out').innerHTML = `<div class="arr"><span>${L({es:'Por semana',en:'Per week'})}</span><b>${e(wk)}</b></div><div class="arr"><span>${L({es:'Por mes (aprox.)',en:'Per month (approx.)'})}</span><b>${e(mo)}</b></div><div class="arr"><span>${L({es:'Por año',en:'Per year'})}</span><b>${e(yr)}</b></div>${RATES?`<div class="arr"><span>${L({es:'Al mes en dólares',en:'Monthly in USD'})}</span><b>${fmt(mo/RATES.COP,'USD')}</b></div>`:''}
+   <p class="small muted mt">${L({es:'Antes de descontar salud (4%) y pensión (4%). Con contrato, además tienes prima, cesantías y vacaciones.',en:'Before health and pension deductions (4% + 4%).'})}</p>
+   ${low?`<div class="notice red mt">⚠️ ${L({es:'Este pago por hora está por debajo del salario mínimo 2026 (unos $9.620 la hora con jornada de 42 horas). Consulta al Ministerio del Trabajo o a un consultorio jurídico.',en:'Below the 2026 minimum wage (about COP 9,620/hour on a 42-hour week).'})}</div>`:''}`;
+}
+
+/* =========================================================
+   VIVIENDA
+   ========================================================= */
+const REDFLAGS = [
+ {es:'Te piden plata para "separar" antes de ver el lugar.',en:'Money to "hold" before viewing.'},
+ {es:'El dueño "está de viaje" y te manda las llaves.',en:'Owner "abroad" sends the keys.'},
+ {es:'El precio es demasiado bajo para el sector.',en:'Too cheap for the area.'},
+ {es:'Te exigen un depósito en efectivo (la ley lo prohíbe en vivienda).',en:'Cash deposit demanded (illegal for housing).'},
+ {es:'No hay contrato escrito.',en:'No written contract.'}
+];
+const HOUSINGACC = [
+ {t:{es:'🔎 Dónde buscar',en:'🔎 Where to look'},b:{es:'<ul class="dots"><li><b>Apartamentos:</b> Fincaraíz, Metrocuadrado, Ciencuadras, inmobiliarias.</li><li><b>Piezas:</b> grupos de Facebook y avisos en el barrio; nunca pagues sin ver.</li><li>Barrios más económicos y conectados: Bello, Itagüí, Belén, Robledo, Buenos Aires, Manrique.</li></ul>',en:'<ul class="dots"><li>Fincaraíz, Metrocuadrado, Ciencuadras; cheaper areas: Bello, Itagüí, Belén.</li></ul>'}},
+ {t:{es:'📋 Fiador o póliza',en:'📋 Guarantor or policy'},b:{es:'<ul class="dots"><li>Las inmobiliarias piden <b>fiador</b> (codeudor con propiedad) o una <b>póliza de arrendamiento</b> con estudio de ingresos.</li><li>Para migrantes es más fácil arrendar directo con el dueño o una pieza amoblada.</li><li>En vivienda urbana la ley no permite exigir depósitos en dinero.</li></ul>',en:'<ul class="dots"><li>Agencies ask for a guarantor or insurance policy; renting directly is easier.</li><li>Cash deposits are not allowed for housing.</li></ul>'}},
+ {t:{es:'🏠 Estratos y servicios',en:'🏠 Strata and utilities'},b:{es:'<p>El estrato (1 a 6) cambia el valor de los servicios públicos (EPM). Pregunta siempre si el arriendo incluye servicios, internet y administración.</p>',en:'<p>Strata (1–6) change utility prices. Ask what is included.</p>'}},
+ {t:{es:'⚖️ Problemas con el arrendador',en:'⚖️ Landlord problems'},b:{es:'<p>Si te quieren sacar sin proceso o no te devuelven lo pactado, busca un consultorio jurídico universitario o la Personería de Medellín: es gratis.</p>',en:'<p>Free help at university law clinics or the Personería.</p>'}}
+];
+const VIEWLIST = [
+ {es:'¿Hay humedad o goteras?',en:'Damp or leaks?'},{es:'¿Funcionan bien el agua y la luz?',en:'Water and power OK?'},
+ {es:'¿Qué estrato es? ¿Cuánto llegan los servicios?',en:'Which stratum? Utility costs?'},{es:'¿Cuántos comparten baño y cocina?',en:'How many share?'},
+ {es:'¿Incluye internet y administración?',en:'Internet and fees included?'},{es:'¿A cuántas cuadras queda el metro o el bus?',en:'Distance to transport?'},
+ {es:'¿Es seguro el sector de noche?',en:'Is the area safe at night?'},{es:'Toma fotos y video del estado el día que entres.',en:'Photograph it on move-in.'}
+];
+
+/* =========================================================
+   COMIDA LATINA
+   ========================================================= */
+const FOODAREAS = [
+ ['centro','🇻🇪',{es:'Centro (Junín, Parque Berrío)',en:'Downtown'},{es:'Areperas venezolanas, panaderías y tiendas con harina, queso llanero y productos de casa.',en:'Venezuelan arepa shops and groceries.'}],
+ ['minorista','🥭',{es:'Plaza Minorista',en:'Plaza Minorista'},{es:'Frutas, verduras y carnes a buen precio; restaurantes de corrientazo.',en:'Cheap produce and set lunches.'}],
+ ['laureles','🍽️',{es:'Laureles y La 70',en:'Laureles & La 70'},{es:'Comida paisa, restaurantes de todos los países latinos y vida de barrio.',en:'Paisa and Latin food.'}],
+ ['bello','🫓',{es:'Bello',en:'Bello'},{es:'Comercio popular y mucha comida casera a buen precio.',en:'Popular, affordable food.'}]
+];
+const FOODWORDS = [['Tinto','Café negro','Black coffee'],['Perico','Café con leche (o huevos revueltos con tomate y cebolla)','Coffee with milk / scrambled eggs'],['Arepa paisa','Arepa delgada y sin sal','Thin plain arepa'],['Bandeja paisa','Frijoles, arroz, chicharrón, carne, huevo, arepa y aguacate','Typical platter'],['Mecato','Snacks, golosinas','Snacks'],['Fruver','Frutas y verduras','Fruit & veg'],['Banano','Cambur (Venezuela)','Banana'],['Plátano maduro','Plátano amarillo','Ripe plantain'],['Frijoles','Caraotas (Venezuela) / porotos','Beans'],['Aguacate','Palta (Sur)','Avocado'],['Gaseosa','Refresco','Soda'],['Pola','Cerveza','Beer'],['Chócolo','Mazorca, maíz tierno','Sweetcorn'],['Buñuelo','Bolita frita de queso y harina','Cheese fritter'],['Natilla','Postre navideño de maíz','Christmas custard'],['Obleas','Galleta delgada con arequipe','Wafer with dulce de leche']];
+
+/* =========================================================
+   CLIMA, MALETA Y FESTIVOS
+   ========================================================= */
+const MONTHS = {es:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],en:['January','February','March','April','May','June','July','August','September','October','November','December']};
+const CLIM = [[28,17],[28,17],[28,17],[27,17],[27,17],[28,17],[28,16],[28,16],[28,16],[27,16],[27,16],[27,17]]; // promedios aproximados (°C)
+const DAYLIGHT = [11.8,11.9,12,12.2,12.3,12.4,12.3,12.2,12.1,11.9,11.8,11.7];
+function renderPack(){
+  const sel=$('#pack-month'); const cur=sel.value!==''?+sel.value:new Date().getMonth();
+  sel.innerHTML = MONTHS[LANG].map((m,i)=>`<option value="${i}" ${i===cur?'selected':''}>${m}</option>`).join('');
+  const [mx,mn]=CLIM[cur], cold=mx<=15, hot=mx>=25;
+  const rainy=[3,4,9,10].includes(cur);
+  const items = [
+   {es:'Ropa ligera de día y un saco o chaqueta delgada para la noche',en:'Light clothes by day, a light jacket at night'},
+   rainy?{es:'Sombrilla y zapatos que aguanten aguaceros: es temporada de lluvias',en:'Umbrella and shoes for downpours: rainy season'}:{es:'Sombrilla pequeña: llueve de repente por la tarde',en:'Small umbrella for afternoon showers'},
+   {es:'Protector solar y gafas: el sol a 1.500 m de altura quema',en:'Sunscreen and sunglasses: strong sun at 1,500 m'},
+   {es:'Zapatos cómodos: Medellín tiene muchas lomas',en:'Comfortable shoes: lots of hills'},
+   {es:'Para Guatapé o Arví, algo de abrigo; para Santa Fe de Antioquia, ropa de calor',en:'Layers for Arví/Guatapé; hot-weather clothes for Santa Fe'},
+   {es:'Enchufes tipo A/B (como en EE. UU.), 110 V',en:'Type A/B plugs, 110 V'},
+   {es:'Repelente si vas a pueblos de clima caliente',en:'Insect repellent for hot-climate towns'}
+  ];
+  $('#pack-out').innerHTML = `<div class="grid g2 keep" style="grid-template-columns:1fr 1fr"><div class="stat"><b>${mx}° / ${mn}°</b><small>${L({es:'máx / mín promedio',en:'avg high / low'})}</small></div><div class="stat"><b>~${DAYLIGHT[cur]} h</b><small>${L({es:'de luz al día',en:'of daylight'})}</small></div></div>
+   <h3 class="mt">🧳 ${L({es:'Lleva en la maleta',en:'Pack'})}</h3><ul class="dots mt">${items.map(i=>`<li>${esc(L(i))}</li>`).join('')}</ul>
+   <div class="notice mt">${L({es:'🌦️ Medellín tiene clima de "eterna primavera": entre 16 y 28 °C todo el año. Llueve más en abril–mayo y octubre–noviembre, casi siempre por la tarde.',en:'🌦️ Eternal spring: 16–28 °C all year. Rainiest in Apr–May and Oct–Nov, usually afternoons.'})}</div>`;
+  const max=32;
+  $('#clim').innerHTML = CLIM.map((c,i)=>`<div class="cl ${i===cur?'on':''}" onclick="document.getElementById('pack-month').value=${i};renderPack()"><div class="bar-wrap"><div class="cbar" style="height:${c[0]/max*100}%"><span>${c[0]}°</span></div></div><small>${MONTHS[LANG][i].slice(0,3)}</small></div>`).join('');
+}
+/* Festivos 2026 verificados (Colombia). 2027 se carga en vivo (Nager.Date) */
+const HOL2026 = [
+ ['2026-11-02',{es:'Día de Todos los Santos (trasladado)',en:'All Saints\' Day (moved)'}],
+ ['2026-11-16',{es:'Independencia de Cartagena (trasladado)',en:'Independence of Cartagena (moved)'}],
+ ['2026-12-08',{es:'Inmaculada Concepción',en:'Immaculate Conception'}],
+ ['2026-12-25',{es:'Navidad',en:'Christmas Day'}]
+];
+const HOL_FALLBACK_2027 = [['2027-01-01',{es:'Año Nuevo',en:'New Year\'s Day'}],['2027-01-11',{es:'Día de los Reyes Magos (trasladado)',en:'Epiphany (moved)'}]];
+let HOLS=null;
+async function loadHols(){
+  let next=null;
+  try{ const {data}=await getJSON('https://date.nager.at/api/v3/PublicHolidays/2027/CO');
+    if(!Array.isArray(data)) throw 0;
+    next = data.filter(h=>h.global || false).map(h=>[h.date,{es:h.localName,en:h.name}]);
+    store.set('hols27',next);
+  }catch(e){ next = store.get('hols27',null) || HOL_FALLBACK_2027; }
+  HOLS = [...HOL2026, ...next];
+  renderHols();
+}
+function renderHols(){
+  if(!HOLS) return;
+  const todayISO = new Intl.DateTimeFormat('en-CA',{timeZone:'America/Bogota'}).format(new Date());
+  const up=HOLS.filter(h=>h[0]>=todayISO).sort((a,b)=>a[0]<b[0]?-1:1).slice(0,7);
+  $('#hols').innerHTML = up.map(h=>`<div class="arr"><span>${esc(L(h[1]))}</span><b style="font-weight:600;flex:none">${tz(new Date(h[0]+'T12:00:00Z'),'America/Bogota',{weekday:'short',day:'numeric',month:'short',year:'numeric'})}</b></div>`).join('') + `<p class="small muted mt">${L({es:'Festivos oficiales de Colombia (Ley Emiliani: muchos se pasan al lunes). 2027 se carga en vivo de Nager.Date.',en:'Official Colombian public holidays. 2027 loaded live from Nager.Date.'})}</p>`;
+}
+
+
+/* =========================================================
+   NACIONALIDAD ESPAÑOLA POR RESIDENCIA (verificado oct. 2026)
+   ========================================================= */
+const NAT_CASES = [
+ {id:'ibero',y:1,ic:'🌎',n:{es:'Latinoamericano o del Caribe por nacimiento',en:'Latin American / Caribbean by birth'}},
+ {id:'marry',y:2,ic:'💍',n:{es:'Casado/a o compañero/a permanente de colombiano/a',en:'Married to / partner of a Colombian'}},
+ {id:'kids',y:2,ic:'👶',n:{es:'Con hijos colombianos',en:'With Colombian children'}},
+ {id:'spain',y:2,ic:'🇪🇸',n:{es:'Español/a por nacimiento',en:'Spanish by birth'}},
+ {id:'gen',y:5,ic:'🌍',n:{es:'Regla general',en:'General rule'}}
+];
+const NAT_STEPS = [
+ ['🪪','#EB0A1E',{es:'Consigue la visa de residente (R)',en:'Get the resident visa (R)'},
+  {es:'La nacionalidad por adopción exige ser <b>titular o beneficiario de visa R</b> y tener cédula de extranjería. El tiempo de domicilio se cuenta como residente.',en:'You must hold (or be a beneficiary of) an <b>R visa</b> and have a foreigner ID.'}],
+ ['📅','#F2A900',{es:'Cumple el tiempo de domicilio',en:'Meet the residence time'},
+  {es:'<b>5 años</b> en general · <b>2 años</b> si estás casado o en unión con colombiano/a, tienes hijos colombianos o eres español · <b>1 año</b> para latinoamericanos y del Caribe por nacimiento (Ley 2332 de 2023). Salir del país 1 año o más interrumpe el tiempo.',en:'5 years general; 2 if married to a Colombian, with Colombian children or Spanish; 1 for Latin Americans by birth. A year abroad breaks the count.'}],
+ ['📁','#0067B1',{es:'Reúne los documentos',en:'Gather documents'},
+  {es:'Copia de visa, cédula de extranjería y pasaporte · carta dirigida al Ministro pidiendo la nacionalidad · registro de nacimiento <b>apostillado</b> (y traducido si aplica) · prueba de tu oficio o ingresos (certificado laboral, RUT, Cámara de Comercio) · documentos de familia si aplica.',en:'Visa, ID and passport copies; letter to the Minister; apostilled birth certificate; proof of livelihood; family documents.'}],
+ ['💻','#EB0A1E',{es:'Radica la solicitud en línea',en:'Apply online'},
+  {es:'En la plataforma de trámites de la <b>Cancillería</b>. Ahí mismo haces seguimiento.',en:'On the Foreign Ministry\'s online platform.'}],
+ ['💳','#F2A900',{es:'Paga el trámite',en:'Pay the fee'},
+  {es:'Valor publicado por la Cancillería: <b>$808.558</b>. Se paga por PSE, tarjeta, Servibanca o Banco GNB Sudameris. Pagar no garantiza la aprobación.',en:'Published fee: <b>COP 808,558</b>. Paying does not guarantee approval.'}],
+ ['📝','#0067B1',{es:'Presenta el examen de conocimientos',en:'Take the knowledge exam'},
+  {es:'Si tienes menos de 60 años: Constitución, historia, cultura y geografía de Colombia; y castellano si no es tu lengua materna. Lo puedes presentar dos veces. Estás exento si estudiaste bachillerato o universidad en Colombia. Guía oficial: <b>"Colombia, nuestra casa"</b>. Practica con el simulador de arriba.',en:'Under 60: Constitution, history, culture and geography (plus Spanish if not your mother tongue). Two attempts. Exempt if you studied in Colombia.'}],
+ ['🔎','#EB0A1E',{es:'Espera los informes',en:'Wait for reports'},
+  {es:'La Cancillería pide informes a la DIAN y a Migración Colombia, que puede visitar tu casa. Mantén tus documentos migratorios vigentes y tus datos actualizados.',en:'DIAN and Migración reports; Migración may visit your home.'}],
+ ['📎','#F2A900',{es:'Subsana si te lo piden',en:'Respond to requests'},
+  {es:'Si te piden corregir algo tienes <b>6 meses</b>; si no respondes, archivan la solicitud.',en:'You have 6 months to correct; otherwise the file is closed.'}],
+ ['✋','#0067B1',{es:'Carta de naturaleza y juramento',en:'Naturalisation letter and oath'},
+  {es:'Si te la conceden, recibes la carta de naturaleza y haces el <b>juramento</b> (o protesta solemne si tu religión no permite jurar).',en:'If granted, you receive the letter and take the oath.'}],
+ ['🇨🇴','#EB0A1E',{es:'Cédula de ciudadanía',en:'Colombian ID'},
+  {es:'Con la nacionalidad tramitas tu <b>cédula de ciudadanía</b> en la Registraduría y luego tu pasaporte colombiano.',en:'Get your Colombian ID at the Registraduría, then your passport.'}]
+];
+const NAT_COST = [
+ [{es:'Trámite de nacionalidad (Cancillería)',en:'Naturalisation fee (Foreign Ministry)'},'$808.558'],
+ [{es:'Apostilla y traducción de documentos de tu país',en:'Apostille & translation in your country'},{es:'Varía',en:'Varies'}],
+ [{es:'Cédula de ciudadanía y pasaporte colombiano',en:'Colombian ID and passport'},{es:'Tarifa vigente',en:'Current fee'}],
+ [{es:'Abogado (opcional)',en:'Lawyer (optional)'},{es:'Opcional',en:'Optional'}]
+];
+const NAT_ACC = [
+ {t:{es:'🌎 ¿Pierdo mi nacionalidad de origen?',en:'🌎 Do I lose my nationality?'},b:{es:'<p>Colombia permite la doble nacionalidad: no te pide renunciar a la tuya. Pero <b>revisa las reglas de tu país</b>: algunos sí retiran la nacionalidad al adquirir otra.</p>',en:'<p>Colombia allows dual nationality, but check your own country\'s rules.</p>'}},
+ {t:{es:'⏱️ ¿Qué tiempo cuenta?',en:'⏱️ What time counts?'},b:{es:'<ul class="dots"><li>El domicilio continuo en Colombia como titular de visa de residente.</li><li>El tiempo como turista o sin papeles no cuenta.</li><li>Salir del país por un año o más interrumpe el conteo.</li></ul>',en:'<ul class="dots"><li>Continuous residence as an R visa holder; tourist or irregular time does not count.</li></ul>'}},
+ {t:{es:'📝 El examen',en:'📝 The exam'},b:{es:'<ul class="dots"><li>Temas: Constitución Política de 1991, historia, cultura y geografía de Colombia.</li><li>Te avisan por correo la fecha y el lugar con un mes de anticipación.</li><li>Material de estudio oficial: la guía "Colombia, nuestra casa" de la Cancillería.</li><li>Los mayores de 60 años no lo presentan.</li></ul>',en:'<ul class="dots"><li>1991 Constitution, history, culture, geography. One month\'s notice. Over-60s exempt.</li></ul>'}},
+ {t:{es:'👶 Hijos menores',en:'👶 Children'},b:{es:'<p>Puedes incluir a tus hijos menores si son beneficiarios de tu visa R y viven contigo en Colombia. Los niños nacidos en Colombia de padres extranjeros tienen reglas propias (por ejemplo, la medida "Primero la Niñez" para hijos de venezolanos): consulta en la Registraduría.</p>',en:'<p>Minor children on your R visa can be included. Children born in Colombia have their own rules.</p>'}},
+ {t:{es:'🔗 Webs oficiales',en:'🔗 Official sites'},b:{es:'<ul class="dots"><li><a href="https://www.cancilleria.gov.co" target="_blank" rel="noopener">cancilleria.gov.co</a> — nacionalidad, visas y la guía de estudio</li><li><a href="https://www.registraduria.gov.co" target="_blank" rel="noopener">registraduria.gov.co</a> — cédula de ciudadanía</li><li><a href="https://www.migracioncolombia.gov.co" target="_blank" rel="noopener">migracioncolombia.gov.co</a> — cédula de extranjería</li></ul>',en:'<ul class="dots"><li>cancilleria.gov.co, registraduria.gov.co, migracioncolombia.gov.co</li></ul>'}}
+];
+let natCase = store.get('natCase','ibero');
+function renderNation(){
+  const done = store.get('natDone',[]);
+  $('#nat-cases').innerHTML = NAT_CASES.map(c=>`<button class="chip ${natCase===c.id?'on':''}" onclick="natCase='${c.id}';store.set('natCase','${c.id}');renderNation()">${c.ic} ${esc(L(c.n))} · ${c.y} ${L(c.y===1?{es:'año',en:'year'}:{es:'años',en:'years'})}</button>`).join('');
+  const di=$('#nat-date'); if(!di.value) di.value = store.get('natDate','');
+  calcNation();
+  $('#nat-road').innerHTML = NAT_STEPS.map((s,i)=>`<div class="rstep ${done.includes(i)?'done':''}"><span class="rn" style="background:${s[1]}">${i+1}</span>
+    <div class="rh"><b>${s[0]} ${esc(L(s[2]))}</b><input type="checkbox" ${done.includes(i)?'checked':''} onchange="toggleNat(${i})" aria-label="${esc(L(s[2]))}"></div>
+    <p class="small mt">${L(s[3])}</p></div>`).join('');
+  const pct=Math.round(done.length/NAT_STEPS.length*100);
+  $('#nat-prog').style.width=pct+'%'; $('#nat-prog-t').textContent=`${done.length}/${NAT_STEPS.length} — ${pct}%`;
+  $('#nat-cost').innerHTML = `<tr><th>${L({es:'Concepto',en:'Item'})}</th><th style="text-align:right">${L({es:'Valor',en:'Cost'})}</th></tr>`+NAT_COST.map(r=>`<tr><td>${L(r[0])}</td><td>${L(r[1])}</td></tr>`).join('') + `<tr><td colspan="2" class="small muted" style="font-weight:400;text-align:left">${L({es:'Además: el costo de apostillar y traducir documentos en tu país, y la cédula y el pasaporte colombianos al final.',en:'Plus apostille/translation costs and the Colombian ID and passport at the end.'})}</td></tr>`;
+  renderAcc($('#nat-acc'),NAT_ACC);
+  if(!QZ) ccseHome(); else ccseShow();
+}
+
+/* =========================================================
+   SIMULADOR CCSE — preguntas de práctica (redacción propia, estilo CCSE).
+   Simulacro propio: 20 preguntas · 30 min · meta 12/20 (60%)
+   [tarea, pregunta, [opciones], índice correcto]
+   ========================================================= */
+const CCSE_TASKS = {1:{n:{es:'Constitución y Estado',en:'Constitution & State'},k:6},2:{n:{es:'Derechos (V/F)',en:'Rights (T/F)'},k:3},3:{n:{es:'Geografía',en:'Geography'},k:4},4:{n:{es:'Historia',en:'History'},k:4},5:{n:{es:'Cultura y símbolos',en:'Culture & symbols'},k:3}};
+const VF=['Verdadero','Falso'];
+const CCSE_Q = [
+ [1,'¿En qué año se expidió la Constitución Política vigente de Colombia?',['1886','1991','2001'],1],
+ [1,'¿Cómo define la Constitución a Colombia?',['Un Estado social de derecho','Una monarquía parlamentaria','Una república federal'],0],
+ [1,'¿Quién es el jefe de Estado y de Gobierno en Colombia?',['El presidente de la República','El presidente del Senado','El procurador general'],0],
+ [1,'¿Cada cuántos años se elige al presidente de la República?',['Cada 4 años','Cada 5 años','Cada 6 años'],0],
+ [1,'¿Qué cámaras forman el Congreso de la República?',['El Senado y la Cámara de Representantes','El Senado y la Corte Suprema','La Cámara y el Consejo de Estado'],0],
+ [1,'¿Qué tribunal guarda la integridad y supremacía de la Constitución?',['La Corte Constitucional','El Consejo de Estado','La Fiscalía'],0],
+ [1,'¿Qué entidad organiza las elecciones y expide la cédula de ciudadanía?',['La Registraduría Nacional del Estado Civil','La Cancillería','La Procuraduría'],0],
+ [1,'¿Qué institución vigila la conducta de los servidores públicos?',['La Procuraduría General de la Nación','La Registraduría','El Banco de la República'],0],
+ [1,'¿Qué entidad vela por la promoción y defensa de los derechos humanos?',['La Defensoría del Pueblo','La DIAN','La Contraloría'],0],
+ [1,'¿Qué entidad controla el manejo de los recursos públicos?',['La Contraloría General de la República','La Registraduría','La Cancillería'],0],
+ [1,'¿Quién elige al gobernador de un departamento?',['Los ciudadanos del departamento por voto popular','El presidente','La Asamblea departamental'],0],
+ [1,'¿Cuál es la capital de Colombia?',['Medellín','Bogotá','Cali'],1],
+ [2,'La Constitución reconoce la diversidad étnica y cultural de la Nación.',VF,0],
+ [2,'En Colombia existe la pena de muerte.',VF,1],
+ [2,'La acción de tutela sirve para proteger los derechos fundamentales de manera rápida.',VF,0],
+ [2,'Los extranjeros en Colombia no tienen ningún derecho civil.',VF,1],
+ [2,'La educación es un derecho de la persona y un servicio público.',VF,0],
+ [2,'En Colombia hay libertad de cultos.',VF,0],
+ [2,'Los niños tienen derechos que prevalecen sobre los derechos de los demás.',VF,0],
+ [2,'Votar es obligatorio en Colombia bajo pena de multa.',VF,1],
+ [3,'¿Cuántos departamentos tiene Colombia?',['28','32','36'],1],
+ [3,'¿Cuál es el río más importante de Colombia, que la recorre de sur a norte?',['El río Magdalena','El río Amazonas','El río Orinoco'],0],
+ [3,'¿En cuántas cordilleras se divide la cordillera de los Andes en Colombia?',['Dos','Tres','Cuatro'],1],
+ [3,'¿Con qué dos océanos o mares tiene costa Colombia?',['El océano Pacífico y el mar Caribe','El Atlántico Sur y el Índico','Solo el Pacífico'],0],
+ [3,'¿Cuál es la capital del departamento de Antioquia?',['Medellín','Rionegro','Envigado'],0],
+ [3,'¿Qué archipiélago colombiano está en el mar Caribe?',['San Andrés, Providencia y Santa Catalina','Galápagos','Malpelo'],0],
+ [3,'¿En qué región natural está la Sierra Nevada de Santa Marta?',['La región Caribe','La Amazonía','La Orinoquía'],0],
+ [3,'¿Con qué países limita Colombia?',['Venezuela, Brasil, Perú, Ecuador y Panamá','Chile, Argentina y Bolivia','México y Guatemala'],0],
+ [4,'¿Qué fecha se celebra como el Día de la Independencia de Colombia?',['20 de julio','7 de agosto','12 de octubre'],0],
+ [4,'¿Qué batalla de 1819 selló la independencia?',['La Batalla de Boyacá','La Batalla de Ayacucho','La Batalla de Carabobo'],0],
+ [4,'¿Quién es conocido como "El Libertador"?',['Simón Bolívar','Francisco de Paula Santander','Antonio Nariño'],0],
+ [4,'¿Qué nombre tuvo el Estado que formaron Colombia, Venezuela, Ecuador y Panamá tras la independencia?',['La Gran Colombia','Las Provincias Unidas','El Virreinato del Perú'],0],
+ [4,'¿En qué año se separó Panamá de Colombia?',['1903','1886','1948'],0],
+ [4,'¿Qué hecho de 1948 desencadenó "El Bogotazo"?',['El asesinato de Jorge Eliécer Gaitán','La firma de un tratado de paz','Un terremoto'],0],
+ [4,'¿En qué año se firmó el Acuerdo de Paz entre el Gobierno y las FARC-EP?',['2016','2002','1991'],0],
+ [5,'¿Qué escritor colombiano ganó el Premio Nobel de Literatura en 1982?',['Gabriel García Márquez','Jorge Isaacs','Álvaro Mutis'],0],
+ [5,'¿Cuáles son los colores de la bandera de Colombia, de arriba hacia abajo?',['Amarillo, azul y rojo','Rojo, amarillo y azul','Azul, amarillo y rojo'],0],
+ [5,'¿Cuál es el ave nacional de Colombia?',['El cóndor de los Andes','El águila calva','El colibrí'],0],
+ [5,'¿Cuál es la flor nacional de Colombia?',['La orquídea (Cattleya trianae)','La rosa','El girasol'],0],
+ [5,'¿Qué género musical es Patrimonio Cultural Inmaterial de la Humanidad desde 2015?',['El vallenato tradicional','El tango','La bachata'],0],
+ [5,'¿Qué escultor y pintor nacido en Medellín es famoso por sus figuras voluminosas?',['Fernando Botero','Pedro Nel Gómez','Débora Arango'],0],
+ [5,'¿Qué fiesta de Medellín tiene el desfile de silleteros?',['La Feria de las Flores','El Carnaval de Barranquilla','El Festival Vallenato'],0]
+];
+let QZ=null, qzTimer=null;
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function ccseHome(){
+  clearInterval(qzTimer); QZ=null;
+  const best=store.get('ccseBest',null);
+  $('#ccse-box').innerHTML = `${best!==null?`<div class="notice" style="margin-bottom:10px">🏆 ${L({es:'Tu mejor resultado',en:'Your best score'})}: <b>${best}/20</b> ${best>=12?'✅':''}</div>`:''}
+   <button class="btn red block" onclick="ccseStart('exam')">⏱️ ${L({es:'Simulacro completo: 20 preguntas, 30 min',en:'Full mock test: 20 questions, 30 min'})}</button>
+   <p class="small muted mt">${L({es:'O practica por tarea (te muestra la respuesta al momento):',en:'Or practise by task (instant feedback):'})}</p>
+   <div class="ychips mt">${Object.entries(CCSE_TASKS).map(([k,t])=>`<button class="chip" onclick="ccseStart('task',${k})">${k}. ${esc(L(t.n))} · ${CCSE_Q.filter(q=>q[0]==k).length}</button>`).join('')}</div>
+   <p class="small muted mt">${L({es:`Banco de práctica: ${CCSE_Q.length} preguntas propias. No son las preguntas oficiales: estudia también la guía "Colombia, nuestra casa" de la Cancillería.`,en:`Practice bank: ${CCSE_Q.length} questions. Not the official ones.`})}</p>`;
+}
+function ccseStart(mode,task){
+  let qs;
+  if(mode==='exam'){ qs=[]; for(const k in CCSE_TASKS) qs.push(...shuffle(CCSE_Q.filter(q=>q[0]==k)).slice(0,CCSE_TASKS[k].k)); }
+  else qs=shuffle(CCSE_Q.filter(q=>q[0]==task));
+  QZ={mode,task,qs,i:0,ans:[],end:mode==='exam'?Date.now()+30*60000:null};
+  clearInterval(qzTimer); if(QZ.end) qzTimer=setInterval(()=>{ const el=$('#qz-time'); if(!QZ){clearInterval(qzTimer);return;} const r=QZ.end-Date.now(); if(r<=0){ clearInterval(qzTimer); ccseFinish(); return;} if(el) el.textContent=`${Math.floor(r/60000)}:${String(Math.floor(r/1000)%60).padStart(2,'0')}`; },1000);
+  ccseShow(); document.getElementById('ccse-card').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function ccseShow(){
+  const q=QZ.qs[QZ.i], a=QZ.ans[QZ.i], fb=QZ.mode==='task' && a!==undefined;
+  $('#ccse-box').innerHTML = `<div class="qz-top"><span class="pill red">${L({es:'Tarea',en:'Task'})} ${q[0]} · ${esc(L(CCSE_TASKS[q[0]].n))}</span>${QZ.end?`<span class="qz-timer">⏱️ <span id="qz-time">30:00</span></span>`:''}</div>
+   <div class="progress mt"><i style="width:${Math.round(QZ.i/QZ.qs.length*100)}%"></i></div>
+   <p class="small muted mt">${L({es:'Pregunta',en:'Question'})} ${QZ.i+1}/${QZ.qs.length}</p>
+   <div class="qz-q">${esc(q[1])}</div>
+   ${q[2].map((o,j)=>`<button class="qz-opt ${fb?(j===q[3]?'ok':(j===a?'bad':'')):(a===j?'sel':'')}" ${fb?'disabled':''} onclick="ccseAnswer(${j})">${'abc'[j]}) ${esc(o)}</button>`).join('')}
+   ${fb?`<div class="notice mt" style="${a===q[3]?'background:#E3F5EA;border-color:#B9E5C8':''}">${a===q[3]?'✅ '+L({es:'¡Correcto!',en:'Correct!'}):'❌ '+L({es:'La respuesta correcta es',en:'Correct answer'})+': <b>'+esc(q[2][q[3]])+'</b>'}</div>`:''}
+   <div class="row mt" style="justify-content:space-between;flex-wrap:wrap">
+     <button class="btn sm ghost" onclick="ccseHome()">✕ ${L({es:'Salir',en:'Exit'})}</button>
+     <div class="row" style="gap:6px">${QZ.i>0&&QZ.mode==='exam'?`<button class="btn sm ghost" onclick="QZ.i--;ccseShow()">←</button>`:''}
+     ${QZ.i<QZ.qs.length-1?`<button class="btn sm" ${QZ.mode==='task'&&a===undefined?'disabled':''} onclick="QZ.i++;ccseShow()">${L({es:'Siguiente',en:'Next'})} →</button>`:`<button class="btn sm red" onclick="ccseFinish()">${L({es:'Terminar',en:'Finish'})} ✓</button>`}</div>
+   </div>`;
+  const r=QZ.end&&QZ.end-Date.now(); if(r&&$('#qz-time')) $('#qz-time').textContent=`${Math.floor(r/60000)}:${String(Math.floor(r/1000)%60).padStart(2,'0')}`;
+}
+function ccseAnswer(j){
+  if(QZ.mode==='task' && QZ.ans[QZ.i]!==undefined) return;
+  QZ.ans[QZ.i]=j;
+  if(QZ.mode==='exam' && QZ.i<QZ.qs.length-1){ QZ.i++; }
+  ccseShow();
+}
+function ccseFinish(){
+  clearInterval(qzTimer); if(!QZ) return;
+  const ok=QZ.qs.filter((q,i)=>QZ.ans[i]===q[3]).length, n=QZ.qs.length;
+  const pass = ok/n>=0.6;
+  if(QZ.mode==='exam'){ const b=store.get('ccseBest',null); if(b===null||ok>b) store.set('ccseBest',ok); }
+  const wrong=QZ.qs.map((q,i)=>[q,QZ.ans[i]]).filter(([q,a])=>a!==q[3]);
+  const byT={}; QZ.qs.forEach((q,i)=>{ byT[q[0]]=byT[q[0]]||[0,0]; byT[q[0]][1]++; if(QZ.ans[i]===q[3]) byT[q[0]][0]++; });
+  $('#ccse-box').innerHTML = `<div class="goal" style="background:${pass?'var(--ok)':'var(--red)'}"><b>${ok}/${n}</b><span>${pass?L({es:'¡Muy bien! Vas bien preparado 🎉',en:'Well done! 🎉'}):L({es:'Todavía no — ¡sigue practicando!',en:'Not yet — keep practising!'})}</span></div>
+   ${QZ.mode==='exam'?`<div class="mt">${Object.entries(byT).map(([k,v])=>`<div class="arr"><span>${L({es:'Tarea',en:'Task'})} ${k} · ${esc(L(CCSE_TASKS[k].n))}</span><b>${v[0]}/${v[1]}</b></div>`).join('')}</div>`:''}
+   ${wrong.length?`<h3 class="mt2">🔁 ${L({es:'Repasa tus errores',en:'Review your mistakes'})}</h3>`+wrong.map(([q,a])=>`<div class="rstep" style="margin-top:8px"><b class="small">${esc(q[1])}</b><div class="small mt">✅ ${esc(q[2][q[3]])}${a!==undefined?`<br><span style="color:var(--red-dark)">❌ ${esc(q[2][a])}</span>`:`<br><span class="muted">${L({es:'Sin responder',en:'Unanswered'})}</span>`}</div></div>`).join(''):''}
+   <div class="grid g2 keep mt" style="grid-template-columns:1fr 1fr"><button class="btn red" onclick="ccseStart('${QZ.mode}',${QZ.task||0})">↻ ${L({es:'Otra vez',en:'Again'})}</button><button class="btn ghost" onclick="ccseHome()">${L({es:'Menú',en:'Menu'})}</button></div>`;
+  QZ=null;
+}
+
+function toggleNat(i){ let d=store.get('natDone',[]); d=d.includes(i)?d.filter(x=>x!==i):[...d,i]; store.set('natDone',d); renderNation(); }
+function calcNation(){
+  const out=$('#nat-out'), v=$('#nat-date').value; store.set('natDate',v);
+  const c=NAT_CASES.find(x=>x.id===natCase)||NAT_CASES[0];
+  if(!v){ out.innerHTML=`<p class="small muted">${L({es:'Elige la fecha para calcular.',en:'Pick a date to calculate.'})}</p>`; return; }
+  const st=new Date(v+'T12:00:00Z'); const el=new Date(st); el.setUTCFullYear(el.getUTCFullYear()+c.y);
+  const today=new Date(new Intl.DateTimeFormat('en-CA',{timeZone:'America/Bogota'}).format(new Date())+'T12:00:00Z');
+  const days=Math.round((el-today)/864e5);
+  const fmtD=d=>tz(d,'UTC',{day:'numeric',month:'long',year:'numeric'});
+  if(st>today){ out.innerHTML=`<div class="notice">${L({es:'Esa fecha es futura. Pon la fecha en que empezó tu residencia legal.',en:'That date is in the future.'})}</div>`; return; }
+  const total=c.y*365, pct=Math.max(0,Math.min(100,Math.round((total-Math.max(days,0))/total*100)));
+  out.innerHTML = `<div class="progress"><i style="width:${pct}%"></i></div>
+   <div class="grid g2 keep mt" style="grid-template-columns:1fr 1fr"><div class="stat"><b style="font-size:1.15rem">${fmtD(el)}</b><small>${L({es:'puedes presentar desde',en:'you can apply from'})}</small></div>
+   <div class="stat"><b>${days>0?days:'✓'}</b><small>${days>0?L({es:'días que faltan',en:'days to go'}):L({es:'¡ya cumples el tiempo!',en:'you meet the time!'})}</small></div></div>
+   ${days<=0?`<div class="notice mt" style="background:#E3F5EA;border-color:#B9E5C8">✅ ${L({es:'Ya cumples el tiempo de domicilio. Revisa que tu visa R y tu cédula de extranjería sigan vigentes y sigue con los pasos 3 a 6.',en:'You meet the residence time. Check your R visa and ID are valid.'})}</div>`
+     : days<=180?`<div class="notice mt">⏳ ${L({es:'Faltan menos de 6 meses: ve apostillando tu registro de nacimiento y estudiando para el examen.',en:'Under 6 months to go: get your apostille and start studying.'})}</div>`:''}
+   <p class="small muted mt">${L({es:'Cálculo orientativo: la residencia debe ser continuada y estar vigente el día que presentes.',en:'Estimate only: residence must be continuous and valid on the day you apply.'})}</p>`;
+}
+
+function renderModules(){
+  renderPlaces();
+  $('#ladder').innerHTML = LADDER.map((s,i)=>`<div class="step"><div class="sn" style="background:${s[3]}">${s[0]}</div><div><b>${i+1}. ${esc(L(s[1]))}</b><div class="small muted">${esc(L(s[2]))}</div></div></div>`).join('') + `<p class="small muted mt">${L({es:'De arriba hacia abajo: de lo más leve a lo más grave.',en:'Top to bottom: least to most serious.'})}</p>`;
+  $('#papers-steps').innerHTML = PAPERS.map((s,i)=>`<div class="step"><div class="sn" style="background:${s[3]}">${s[0]}</div><div><b>${i+1}. ${esc(L(s[1]))}</b><div class="small muted">${esc(L(s[2]))}</div></div></div>`).join('');
+  renderAcc($('#papers-acc'),PAPERSACC);
+  renderNation();
+  renderAcc($('#health-acc'),HEALTHACC); renderAcc($('#work-acc'),WORKACC); renderPay();
+  $('#redflags').innerHTML = REDFLAGS.map(r=>`<li>${esc(L(r))}</li>`).join('');
+  renderAcc($('#housing-acc'),HOUSINGACC);
+  const vd=store.get('view',[]);
+  $('#viewlist').innerHTML = VIEWLIST.map((v,i)=>`<label class="chk ${vd.includes(i)?'done':''}"><input type="checkbox" ${vd.includes(i)?'checked':''} onchange="let d=store.get('view',[]);d=d.includes(${i})?d.filter(x=>x!==${i}):[...d,${i}];store.set('view',d);renderModules()"><span class="t">${esc(L(v))}</span></label>`).join('');
+  $('#food-areas').innerHTML = FOODAREAS.map(f=>`<div class="card"><div style="font-size:1.6rem">${f[1]}</div><h3 class="mt">${esc(L(f[2]))}</h3><p class="small muted">${esc(L(f[3]))}</p><div class="row mt" style="gap:6px"><button class="btn sm ghost" onclick="routeTo('${f[0]}')">🧭</button><button class="btn sm ghost" onclick="openPlace('${f[0]}')">${L({es:'Ver',en:'View'})}</button></div></div>`).join('');
+  $('#food-words').innerHTML = `<tr><th>${L({es:'En Medellín',en:'In Medellín'})}</th><th style="text-align:right">${L({es:'Significa',en:'Meaning'})}</th></tr>` + FOODWORDS.map((w,i)=>`<tr><td><b>${esc(w[0])}</b> <button class="say" style="width:26px;height:26px;font-size:.7rem" onclick="speak(FOODWORDS[${i}][0])">🔊</button></td><td style="font-weight:400;text-align:right">${esc(LANG==='es'?w[1]:w[2])}</td></tr>`).join('');
+  renderPack(); renderHols();
+}
+
+/* ---------- Render all ---------- */
+function renderAll(){
+  renderFares(); renderAcc($('#how-acc'),HOW); renderLines(); renderSits(); renderSOS(); renderCheck(); renderAcc($('#visa-acc'),VISA);
+  $('#money-tips').innerHTML = MONEY_TIPS.map(t=>`<li>${esc(L(t))}</li>`).join('');
+  $('#culture').innerHTML = CULTURE.map(c=>`<div class="card"><div style="font-size:1.6rem">${c[0]}</div><h3 class="mt">${esc(L(c[1]))}</h3><p class="small muted">${esc(L(c[2]))}</p></div>`).join('');
+  renderAcc($('#safety'),SAFETY);
+  renderModules();
+  if(galDone) renderVideos();
+  if(map) renderChips();
+  if(RATES) renderFX(); if(WX) renderWeather();
+  tick();
+  $('#upd').textContent = tz(new Date(),'America/Bogota',{dateStyle:'long'});
+}
+
+/* ---------- PWA ---------- */
+let deferred=null;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferred=e; if(!store.get('noInstall',false)) $('#install').classList.add('on'); });
+$('#install-btn').onclick=async()=>{ if(!deferred) return; deferred.prompt(); await deferred.userChoice; deferred=null; $('#install').classList.remove('on'); };
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent), standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+if(isIOS && !standalone && !store.get('iosHint',false)){ setTimeout(()=>{ toast(L({es:'En iPhone: toca Compartir → "Agregar a inicio" para instalar',en:'On iPhone: Share → "Add to Home Screen"'})); store.set('iosHint',true); },4000); }
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+
+/* ---------- Boot ---------- */
+applyLang(); renderAll();
+$('#my-addr').value = store.get('addr','');
+$('#fx-amt').addEventListener('input',renderFX); $('#fx-from').addEventListener('change',renderFX);
+$('#j-to').addEventListener('keydown',e=>{ if(e.key==='Enter') planJourney(); });
+setInterval(tick,15000);
+loadHero(); loadWeather(); loadRates(); loadHols();
+$('#pl-q').addEventListener('input',renderPlaces);
+$('#nat-date').addEventListener('change',calcNation);
+['pay-rate','pay-hours'].forEach(id=>$('#'+id).addEventListener('input',renderPay));
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closePlace(); });
+setTimeout(()=>$('#splash').classList.add('off'),900);
+const h=location.hash.slice(1); if(h && document.getElementById('v-'+h)) go(h);
+</script>
+</body>
+</html>
