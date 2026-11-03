@@ -297,6 +297,7 @@ footer.foot b{color:var(--ink)}
 .splash h1{font-size:2.6rem;text-transform:uppercase}
 .splash small{opacity:.9}
 .splash.off{opacity:0;pointer-events:none}
+.tour-gal{display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px}.tour-gal img{width:100%;height:110px;object-fit:cover;border-radius:10px}.tour-box{background:rgba(235,10,30,.06);border:1px solid rgba(235,10,30,.25);border-radius:14px;padding:12px}
 </style>
 <body>
 
@@ -1523,10 +1524,17 @@ const PCATS = {
   museo:{ic:'🖼️',n:{es:'Museos',en:'Museums'}}, monu:{ic:'🏛️',n:{es:'Íconos',en:'Landmarks'}},
   parque:{ic:'🌳',n:{es:'Parques',en:'Parks'}}, mercado:{ic:'🛍️',n:{es:'Mercados',en:'Markets'}},
   barrio:{ic:'🏘️',n:{es:'Barrios',en:'Neighbourhoods'}}, vista:{ic:'🌄',n:{es:'Miradores',en:'Viewpoints'}},
-  ninos:{ic:'🧒',n:{es:'Con niños',en:'With kids'}}, excursion:{ic:'🚌',n:{es:'Excursiones',en:'Day trips'}},
+  ninos:{ic:'🧒',n:{es:'Con niños',en:'With kids'}}, tour:{ic:'🎟️',n:{es:'Tours',en:'Tours'}}, excursion:{ic:'🚌',n:{es:'Excursiones',en:'Day trips'}},
   latino:{ic:'🫓',n:{es:'Comunidad migrante',en:'Migrant community'}}, fav:{ic:'❤️',n:{es:'Mis lugares',en:'My places'}}
 };
 const LUGARES = [
+ {id:'tourmiradores',n:'Tour: atardecer en 2 miradores con fogata',w:'',es:'',img:'tour-miradores.jpg',gal:['tour-miradores.jpg','tour-fogata.jpg','tour-columpio.jpg'],lat:6.3410,lng:-75.5920,c:['vista','tour'],free:0,st:'Recogida en El Poblado, Laureles o Estadio',web:'https://www.expedia.com/es/things-to-do/null.a49962995.detalles-actividades',book:'Expedia',
+  d:{es:'Tour de 4 horas con Medellín Florece: atardecer y luces de la ciudad desde el mirador La Palma (San Félix, Bello), con fogata, música en vivo y snack típico, y luego el cerro El Picacho con su Cristo y la ciudad iluminada.',en:'4-hour tour by Medellín Florece: sunset and city lights from La Palma viewpoint (San Félix, Bello) with campfire, live music and a local snack, then El Picacho hill with its Christ statue over the lit-up city.'},
+  tip:{es:'Lleva chaqueta: arriba hace frío de noche. Si hay neblina la vista se tapa, y el tour sale con lluvia o con sol. No se recomienda para personas con problemas del corazón.',en:'Bring a jacket: it gets cold up there at night. Fog can hide the view and the tour runs rain or shine. Not recommended for people with heart conditions.'},
+  tour:{precio:{es:'Desde US$75 por adulto (impuestos incluidos), según Expedia el 3 nov 2026',en:'From US$75 per adult (taxes included), per Expedia on 3 Nov 2026'},
+   inc:{es:['Recogida y regreso en carro o van (El Poblado, Laureles o Estadio)','Conductor-guía en español o inglés','Mirador La Palma: 90 min con fogata y música en vivo','Snack: arepa de chócolo con queso y chocolate caliente, o migao','Cerro El Picacho: 40 min, subida opcional al Cristo (unos 300 escalones)'],en:['Pick-up and drop-off by car or van (El Poblado, Laureles or Estadio)','Driver-guide in Spanish or English','La Palma viewpoint: 90 min with campfire and live music','Snack: sweet-corn arepa with cheese and hot chocolate, or migao','El Picacho hill: 40 min, optional climb to the Christ statue (about 300 steps)']},
+   no:{es:['Comida y bebida aparte del snack','Recogida fuera de El Poblado, Laureles y Estadio'],en:['Food and drinks beyond the snack','Pick-up outside El Poblado, Laureles and Estadio']},
+   por:'Medellín Florece', dur:{es:'4 horas',en:'4 hours'}}},
  {id:'comuna13',n:'Comuna 13 (escaleras eléctricas y grafitis)',w:'Comuna_13,_Medellín',es:'Comuna_13_(Medellín)',lat:6.2565,lng:-75.6195,c:['barrio','vista'],free:1,st:'Metro San Javier + bus integrado',web:'',
   d:{es:'El barrio que se transformó con escaleras eléctricas al aire libre, grafitis y música. Símbolo de la nueva Medellín.',en:'The neighbourhood transformed by outdoor escalators, graffiti and hip-hop.'},
   tip:{es:'Ve de día y con un guía local de la comuna: tu plata se queda en el barrio.',en:'Go by day with a local guide.'}},
@@ -1595,6 +1603,7 @@ const ITINS = [
  {id:'centro',ic:'🗿',n:{es:'Centro y Botero',en:'Downtown & Botero'},s:{es:'Historia y arte',en:'History and art'},stops:['botero','antioquia','minorista','piesdescalzos','memoria']},
  {id:'gratis',ic:'🆓',n:{es:'Medellín gratis',en:'Free Medellín'},s:{es:'Un día sin pagar entradas',en:'No tickets needed'},stops:['botanico','deseos','botero','piesdescalzos','memoria']},
  {id:'cables',ic:'🚡',n:{es:'Metrocables y Arví',en:'Cable cars & Arví'},s:{es:'La ciudad desde el aire',en:'The city from above'},stops:['biblioteca','arvi']},
+ {id:'luces',ic:'🔥',n:{es:'Atardecer y luces',en:'Sunset & city lights'},s:{es:'Tour con fogata y El Picacho',en:'Campfire tour and El Picacho'},stops:['tourmiradores']},
  {id:'comuna',ic:'🎨',n:{es:'Comuna 13 y atardecer',en:'Comuna 13 & sunset'},s:{es:'Grafiti y mirador',en:'Graffiti and views'},stops:['comuna13','pueblito']},
  {id:'ninos',ic:'🧒',n:{es:'Con niños',en:'With kids'},s:{es:'Ciencia, flores y agua',en:'Science, flowers, water'},stops:['explora','botanico','deseos','piesdescalzos']},
  {id:'guatape',ic:'🪨',n:{es:'Guatapé',en:'Guatapé'},s:{es:'Excursión de un día',en:'Day trip'},stops:['guatape']}
@@ -1619,7 +1628,7 @@ function renderPlaces(){
   $('#places').innerHTML = list.length ? list.map(p=>{
     const m=mine[p.id];
     return `<article class="plc">
-      <div class="plc-img" id="pimg-${p.id}" onclick="openPlace('${p.id}')"><div class="ph-fb">📷</div>${m?`<span class="plc-mark">${m==='done'?'✓ '+L({es:'Ya fui',en:'Visited'}):'❤️ '+L({es:'Quiero ir',en:'Want to go'})}</span>`:''}</div>
+      <div class="plc-img" id="pimg-${p.id}" onclick="openPlace('${p.id}')">${p.img?`<img alt="${esc(p.n)}" src="${p.img}">`:'<div class="ph-fb">📷</div>'}${m?`<span class="plc-mark">${m==='done'?'✓ '+L({es:'Ya fui',en:'Visited'}):'❤️ '+L({es:'Quiero ir',en:'Want to go'})}</span>`:''}</div>
       <div class="plc-body">
         <div class="row" style="justify-content:space-between;align-items:start"><h3 onclick="openPlace('${p.id}')" style="cursor:pointer">${esc(p.n)}</h3>${plTag(p)}</div>
         <div class="small muted">🚇 ${esc(p.st)}${plOrder?` · ${plOrder[p.id]<1?Math.round(plOrder[p.id]*1000)+' m':plOrder[p.id].toFixed(1)+' km'}`:''}</div>
@@ -1632,7 +1641,7 @@ function renderPlaces(){
         </div>
       </div></article>`;
   }).join('') : `<p class="muted mt">${L({es:'No hay lugares con ese filtro.',en:'No places match.'})}</p>`;
-  wikiBatch(list.map(p=>p.w)).then(()=>list.forEach(async p=>{ try{ const src=await wikiImg(p.w,500,p.n+' Medellín'); const el=document.getElementById('pimg-'+p.id); if(src&&el){ const fb=el.querySelector('.ph-fb'); if(fb) fb.outerHTML=`<img alt="${esc(p.n)}" src="${src}" referrerpolicy="no-referrer">`; } }catch(e){} }));
+  wikiBatch(list.filter(p=>p.w).map(p=>p.w)).then(()=>list.filter(p=>p.w&&!p.img).forEach(async p=>{ try{ const src=await wikiImg(p.w,500,p.n+' Medellín'); const el=document.getElementById('pimg-'+p.id); if(src&&el){ const fb=el.querySelector('.ph-fb'); if(fb) fb.outerHTML=`<img alt="${esc(p.n)}" src="${src}" referrerpolicy="no-referrer">`; } }catch(e){} }));
   $('#itins').innerHTML = ITINS.map(it=>`<button class="tile" onclick="showItin('${it.id}')"><span class="em">${it.ic}</span><b>${L(it.n)}</b><small>${L(it.s)} · ${it.stops.length} ${L({es:'paradas',en:'stops'})}</small><small class="muted">${it.stops.map(id=>LUGARES.find(p=>p.id===id).n).join(' → ')}</small></button>`).join('');
 }
 function toggleMine(id){ const m=plMine(); m[id] = !m[id]?'want': m[id]==='want'?'done':undefined; if(!m[id]) delete m[id]; store.set('pl',m); renderPlaces(); toast(m[id]==='want'?'❤️ '+L({es:'Guardado en "Quiero ir"',en:'Saved to "Want to go"'}):m[id]==='done'?'✅ '+L({es:'Marcado como visitado',en:'Marked visited'}):L({es:'Quitado de tu lista',en:'Removed'})); }
@@ -1657,16 +1666,24 @@ async function openPlace(id){
     <div class="row mt" style="gap:6px"><button class="say" onclick="speak('${jsq(p.n)}')">🔊</button><span class="small muted">${L({es:'Escucha cómo se pronuncia',en:'Hear the pronunciation'})}</span></div>
     <p class="mt">${esc(L(p.d))}</p>
     <div class="notice mt">💡 ${esc(L(p.tip))}</div>
-    <p class="small mt">🚇 <b>${L({es:'Estación',en:'Station'})}:</b> ${esc(p.st)}</p>
-    <div class="mt" id="sheet-wiki"><span class="spin"></span></div>
+    <p class="small mt">🚇 <b>${p.tour?L({es:'Recogida',en:'Pick-up'}):L({es:'Estación',en:'Station'})}:</b> ${esc(p.tour?p.st.replace(/^Recogida en /,''):p.st)}</p>
+    ${p.gal?`<div class="tour-gal mt">${p.gal.map(g=>`<img src="${g}" alt="${esc(p.n)}" loading="lazy">`).join('')}</div>`:''}
+    ${p.tour?`<div class="tour-box mt">
+      <div class="row" style="gap:8px;flex-wrap:wrap"><span class="pill">⏱️ ${L(p.tour.dur)}</span><span class="pill">💵 ${L(p.tour.precio)}</span><span class="pill">${L({es:'Operador',en:'Operator'})}: ${esc(p.tour.por)}</span></div>
+      <h3 class="mt">✅ ${L({es:'Incluye',en:'Included'})}</h3><ul class="dots small">${L(p.tour.inc).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+      <h3 class="mt">❌ ${L({es:'No incluye',en:'Not included'})}</h3><ul class="dots small">${L(p.tour.no).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+      <p class="small muted mt">${L({es:'Precio y cupos cambian según la fecha: confírmalos en la página antes de pagar. Revisa también si tu fecha es reembolsable.',en:'Price and availability change by date: confirm on the booking page before paying, and check whether your date is refundable.'})}</p>
+    </div>`:''}
+    <div class="mt" id="sheet-wiki">${p.w?'<span class="spin"></span>':''}</div>
     <div class="grid g2 keep mt" style="grid-template-columns:1fr 1fr">
       <button class="btn red" onclick="routeTo('${p.id}')">🧭 ${L({es:'Cómo llegar',en:'Directions'})}</button>
       <button class="btn" onclick="closePlace();flyTo(${p.lat},${p.lng})">🗺️ ${L({es:'Ver en mapa',en:'On the map'})}</button>
       <button class="btn ghost" onclick="toggleMine('${p.id}');openPlace('${p.id}')">${m==='want'?'❤️ '+L({es:'Quiero ir',en:'Want to go'}):m==='done'?'✅ '+L({es:'Ya fui',en:'Visited'}):'🤍 '+L({es:'Guardar',en:'Save'})}</button>
-      ${p.web?`<a class="btn ghost" href="${p.web}" target="_blank" rel="noopener">🌐 ${L({es:'Web oficial',en:'Official site'})}</a>`:`<a class="btn ghost" href="https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}" target="_blank" rel="noopener">📍 Google Maps</a>`}
+      ${p.web?`<a class="btn ${p.book?'red':'ghost'}" href="${p.web}" target="_blank" rel="noopener">${p.book?'🎟️ '+L({es:'Reservar en ',en:'Book on '})+p.book:'🌐 '+L({es:'Web oficial',en:'Official site'})}</a>`:`<a class="btn ghost" href="https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}" target="_blank" rel="noopener">📍 Google Maps</a>`}
     </div>
    </div>`;
   $('#pl-modal').classList.add('on'); document.body.style.overflow='hidden';
+  if(p.img){ $('#sheet-img').style.backgroundImage=`url("${p.img}")`; return; }
   wikiImg(p.w,960,p.n+' Medellín').then(src=>{ if(src) $('#sheet-img').style.backgroundImage=`url("${src}")`; }).catch(()=>{});
   const ws=await wikiSummary(p);
   const box=$('#sheet-wiki'); if(!box) return;

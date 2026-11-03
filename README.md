@@ -11,7 +11,7 @@ PWA instalable, hecha en HTML + JavaScript puro, sin servidor propio. Hermana de
 
 | Módulo | Qué hace |
 |---|---|
-| 🏛️ Lugares de interés | 21 lugares con foto real (Comuna 13, Plaza Botero, Parque Arví, Pueblito Paisa, Guatapé…), gratis o de pago, ficha de Wikipedia, "Cerca de mí", "Quiero ir / Ya fui" y 6 itinerarios de un día en el mapa |
+| 🏛️ Lugares de interés | 22 lugares con foto real (tour de atardecer en 2 miradores con fogata, Comuna 13, Plaza Botero, Parque Arví, Pueblito Paisa, Guatapé…), gratis o de pago, ficha de Wikipedia, "Cerca de mí", "Quiero ir / Ya fui" y 7 itinerarios de un día en el mapa |
 | 📄 Papeles | Entrada como turista, visas V/M/R, registro de visa, cédula de extranjería, PPT, PEP Tutor (hasta 31-12-2026), visa de visitante especial, traspaso de visas R (31-10-2026), refugio |
 | 🇨🇴 Nacionalidad colombiana | Calculadora de fecha (1, 2 o 5 años según el caso), ruta de 10 pasos, valor del trámite y simulacro de 20 preguntas sobre Constitución, historia, geografía y cultura |
 | 🗺️ Mapa | Migración Colombia, Centro Intégrate, Alcaldía, hospitales con urgencias, aeropuertos y terminales. Líneas de metro, tranvía y metrocables desde OpenStreetMap |
